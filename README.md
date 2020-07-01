@@ -21,9 +21,9 @@
 
 Creating the folder outside of the repository prevents config being pushed into the repo accidentally.
 
-### Create Dotenv Files
+### Create Files
 
-Create the following dotenv files into the folder created in the previous step.
+Create the following files into the folder created in the previous step.
 
 ```bash
 # api.env
@@ -60,4 +60,8 @@ FLYWAY_SCHEMAS=
 
 PGADMIN_DEFAULT_EMAIL=
 PGADMIN_DEFAULT_PASSWORD=
+```
+
+```bash
+# postman_environment.json
 ```
