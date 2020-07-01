@@ -1,0 +1,35 @@
+parameters:
+  - name: name
+    type: string
+  - name: variable_group
+    type: string
+
+stages:
+  # STAGE: Test
+  - stage: test_${{ parameters.name }}
+    displayName: Test ${{ parameters.name }}
+    dependsOn: deploy_${{ parameters.name }}
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      - group: ${{ parameters.variable_group }}
+    jobs:
+      - job: run_tests
+        displayName: Run tests
+        steps:
+          - download: current
+            artifact: test
+            displayName: Download test artifact
+          - script: |
+              npx newman run postman_collection.json \
+                --env-var "api_key=$(test_api_key)" \
+                --env-var "api_base_url=$(test_api_base_url)" \
+                --reporters cli,junit \
+                --reporter-junit-export results/junitReport.xml
+            displayName: Run Newman
+            workingDirectory: $(Pipeline.Workspace)/test
+          - task: PublishTestResults@2
+            displayName: Publish test results
+            inputs:
+              testResultsFiles: '**/*.xml'
+              searchFolder: $(Pipeline.Workspace)/test

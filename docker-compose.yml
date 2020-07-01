@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  api:
+    build: ./api/
+    env_file:
+      - ../golang-api-secrets/api.env
+    ports:
+      - 8010:8010
+    networks:
+      - app-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - ../golang-api-secrets/pgadmin.env
+    ports:
+      - 8020:80
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - app-net
+
+  swaggereditor:
+    image: swaggerapi/swagger-editor
+    ports:
+      - 8030:8080
+    networks:
+      - app-net
+
+networks:
+  app-net:
+
+volumes:
+  pgadmin-data:
