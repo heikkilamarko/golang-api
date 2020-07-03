@@ -8,6 +8,7 @@ steps:
         --rm \
         --mount type=bind,src=$(Pipeline.Workspace)/db-migrations,dst=/flyway/sql \
         flyway/flyway \
+        -sqlMigrationPrefix="" \
         -url=$(flyway_url) \
         -user=$(flyway_user) \
         -password=$(flyway_password) \
