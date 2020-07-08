@@ -16,9 +16,9 @@ import (
 
 // App struct
 type App struct {
-	Repository products.Repository
-	Products   *products.Controller
-	Router     *mux.Router
+	ProductsRepository products.Repository
+	ProductsController *products.Controller
+	Router             *mux.Router
 }
 
 // NewApp func
@@ -30,7 +30,8 @@ func NewApp() *App {
 func (a *App) Initialize() {
 	a.initializeConfig()
 	a.initializeLogger()
-	a.initializeRepository()
+	a.initializeRepositories()
+	a.initializeControllers()
 	a.initializeRouter()
 }
 
@@ -60,38 +61,38 @@ func (a *App) initializeLogger() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
 }
 
-func (a *App) initializeRepository() {
-	a.Repository = products.NewRepository()
-	a.Repository.Initialize()
+func (a *App) initializeRepositories() {
+	r := products.NewRepository()
+	r.Initialize()
+
+	a.ProductsRepository = r
+}
+
+func (a *App) initializeControllers() {
+	c := products.NewController(a.ProductsRepository)
+
+	a.ProductsController = c
 }
 
 func (a *App) initializeRouter() {
-	a.Router = mux.NewRouter()
-	a.addMiddleware()
-	a.addProductsRoutes()
-	a.addNotFoundRoute()
-}
+	r := mux.NewRouter()
 
-func (a *App) addMiddleware() {
-	a.Router.Use(middleware.Logger)
-	a.Router.Use(middleware.Recovery)
-	a.Router.Use(middleware.Auth)
-}
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recovery)
+	r.Use(middleware.Auth)
 
-func (a *App) addProductsRoutes() {
-	c := products.NewController(a.Repository)
-	r := a.Router
+	c := a.ProductsController
+
 	r.HandleFunc("/products", c.GetProducts).Methods("GET")
 	r.HandleFunc("/products", c.CreateProduct).Methods("POST")
 	r.HandleFunc("/products/{id:[0-9]+}", c.GetProduct).Methods("GET")
 	r.HandleFunc("/products/{id:[0-9]+}", c.UpdateProduct).Methods("PUT")
 	r.HandleFunc("/products/{id:[0-9]+}", c.DeleteProduct).Methods("DELETE")
-	a.Products = c
-}
 
-func (a *App) addNotFoundRoute() {
-	a.Router.NotFoundHandler = http.HandlerFunc(
+	r.NotFoundHandler = http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			utils.WriteNotFound(w, nil)
 		})
+
+	a.Router = r
 }
