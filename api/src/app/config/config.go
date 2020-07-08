@@ -17,8 +17,7 @@ type AppConfig struct {
 	CorsEnabled bool
 }
 
-// Load method
-func Load() {
+func init() {
 	Config.Port = os.Getenv("APP_PORT")
 	Config.DBHost = os.Getenv("APP_DB_HOST")
 	Config.DBName = os.Getenv("APP_DB_NAME")

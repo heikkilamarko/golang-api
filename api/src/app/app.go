@@ -10,7 +10,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
@@ -21,22 +20,15 @@ type App struct {
 	Router             *mux.Router
 }
 
-// NewApp func
-func NewApp() *App {
+// New func
+func New() *App {
 	return &App{}
-}
-
-// Initialize method
-func (a *App) Initialize() {
-	a.initializeConfig()
-	a.initializeLogger()
-	a.initializeRepositories()
-	a.initializeControllers()
-	a.initializeRouter()
 }
 
 // Run method
 func (a *App) Run() {
+	a.configureControllers()
+	a.configureRouter()
 
 	addr := fmt.Sprintf(":%s", config.Config.Port)
 
@@ -53,28 +45,12 @@ func (a *App) Run() {
 	}
 }
 
-func (a *App) initializeConfig() {
-	config.Load()
+func (a *App) configureControllers() {
+	a.ProductsRepository = products.NewRepository()
+	a.ProductsController = products.NewController(a.ProductsRepository)
 }
 
-func (a *App) initializeLogger() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
-}
-
-func (a *App) initializeRepositories() {
-	r := products.NewRepository()
-	r.Initialize()
-
-	a.ProductsRepository = r
-}
-
-func (a *App) initializeControllers() {
-	c := products.NewController(a.ProductsRepository)
-
-	a.ProductsController = c
-}
-
-func (a *App) initializeRouter() {
+func (a *App) configureRouter() {
 	r := mux.NewRouter()
 
 	r.Use(middleware.Logger)

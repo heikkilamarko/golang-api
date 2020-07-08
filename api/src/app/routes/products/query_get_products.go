@@ -16,7 +16,7 @@ func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	products, err := c.Repository.getProducts(r.Context(), v.query)
+	products, err := c.Repository.GetProducts(r.Context(), v.query)
 
 	if err != nil {
 		utils.WriteInternalError(w, nil)
@@ -28,7 +28,7 @@ func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
 
 type getProductsQueryValidator struct {
 	utils.RequestValidator
-	query *getProductsQuery
+	query *GetProductsQuery
 }
 
 const limitMax = 100
@@ -58,6 +58,6 @@ func (v *getProductsQueryValidator) parseAndValidate() {
 	if 0 < len(validationErrors) {
 		v.ValidationErrors = validationErrors
 	} else {
-		v.query = &getProductsQuery{offset, limit}
+		v.query = &GetProductsQuery{offset, limit}
 	}
 }

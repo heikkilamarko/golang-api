@@ -17,23 +17,23 @@ func (c *Controller) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := c.Repository.createProduct(r.Context(), v.command.product); err != nil {
+	if err := c.Repository.CreateProduct(r.Context(), v.command); err != nil {
 		utils.WriteInternalError(w, nil)
 		return
 	}
 
-	utils.WriteCreated(w, v.command.product, nil)
+	utils.WriteCreated(w, v.command.Product, nil)
 }
 
 type createProductCommandValidator struct {
 	utils.RequestValidator
-	command *createProductCommand
+	command *CreateProductCommand
 }
 
 func (v *createProductCommandValidator) parseAndValidate() {
 	validationErrors := map[string]string{}
 
-	product := &product{}
+	product := &Product{}
 	if err := json.NewDecoder(v.Request.Body).Decode(product); err != nil {
 		validationErrors[constants.FieldRequestBody] = constants.ErrCodeInvalidPayload
 	}
@@ -41,6 +41,6 @@ func (v *createProductCommandValidator) parseAndValidate() {
 	if 0 < len(validationErrors) {
 		v.ValidationErrors = validationErrors
 	} else {
-		v.command = &createProductCommand{product}
+		v.command = &CreateProductCommand{product}
 	}
 }

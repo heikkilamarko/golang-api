@@ -1,6 +1,7 @@
 package products
 
-type product struct {
+// Product struct
+type Product struct {
 	ID          int     `json:"id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
@@ -8,27 +9,28 @@ type product struct {
 	Comment     string  `json:"comment"`
 }
 
-// Queries
-
-type getProductsQuery struct {
+// GetProductsQuery struct
+type GetProductsQuery struct {
 	Offset int `json:"offset"`
 	Limit  int `json:"limit"`
 }
 
-type getProductQuery struct {
-	id int
+// GetProductQuery struct
+type GetProductQuery struct {
+	ID int
 }
 
-// Commands
-
-type createProductCommand struct {
-	product *product
+// CreateProductCommand struct
+type CreateProductCommand struct {
+	Product *Product
 }
 
-type updateProductCommand struct {
-	product *product
+// UpdateProductCommand struct
+type UpdateProductCommand struct {
+	Product *Product
 }
 
-type deleteProductCommand struct {
-	id int
+// DeleteProductCommand struct
+type DeleteProductCommand struct {
+	ID int
 }

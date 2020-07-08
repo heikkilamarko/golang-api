@@ -16,7 +16,7 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := c.Repository.deleteProduct(r.Context(), v.command.id); err != nil {
+	if err := c.Repository.DeleteProduct(r.Context(), v.command); err != nil {
 		switch err {
 		case utils.ErrNotFound:
 			utils.WriteNotFound(w, nil)
@@ -31,7 +31,7 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 type deleteProductCommandValidator struct {
 	utils.RequestValidator
-	command *deleteProductCommand
+	command *DeleteProductCommand
 }
 
 func (v *deleteProductCommandValidator) parseAndValidate() {
@@ -45,6 +45,6 @@ func (v *deleteProductCommandValidator) parseAndValidate() {
 	if 0 < len(validationErrors) {
 		v.ValidationErrors = validationErrors
 	} else {
-		v.command = &deleteProductCommand{id}
+		v.command = &DeleteProductCommand{id}
 	}
 }

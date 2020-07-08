@@ -5,7 +5,6 @@ import (
 )
 
 func main() {
-	a := app.NewApp()
-	a.Initialize()
+	a := app.New()
 	a.Run()
 }

@@ -16,7 +16,7 @@ func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	product, err := c.Repository.getProduct(r.Context(), v.query.id)
+	product, err := c.Repository.GetProduct(r.Context(), v.query)
 
 	if err != nil {
 		switch err {
@@ -33,7 +33,7 @@ func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
 
 type getProductQueryValidator struct {
 	utils.RequestValidator
-	query *getProductQuery
+	query *GetProductQuery
 }
 
 func (v *getProductQueryValidator) parseAndValidate() {
@@ -47,6 +47,6 @@ func (v *getProductQueryValidator) parseAndValidate() {
 	if 0 < len(validationErrors) {
 		v.ValidationErrors = validationErrors
 	} else {
-		v.query = &getProductQuery{id}
+		v.query = &GetProductQuery{id}
 	}
 }

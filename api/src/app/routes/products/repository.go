@@ -4,15 +4,16 @@ import "context"
 
 // Repository interface
 type Repository interface {
-	Initialize()
-	getProducts(context.Context, *getProductsQuery) ([]*product, error)
-	getProduct(context.Context, int) (*product, error)
-	createProduct(context.Context, *product) error
-	updateProduct(context.Context, *product) error
-	deleteProduct(context.Context, int) error
+	GetProducts(context.Context, *GetProductsQuery) ([]*Product, error)
+	GetProduct(context.Context, *GetProductQuery) (*Product, error)
+	CreateProduct(context.Context, *CreateProductCommand) error
+	UpdateProduct(context.Context, *UpdateProductCommand) error
+	DeleteProduct(context.Context, *DeleteProductCommand) error
 }
 
 // NewRepository func
 func NewRepository() Repository {
-	return &repository{}
+	r := &repository{}
+	r.initialize()
+	return r
 }

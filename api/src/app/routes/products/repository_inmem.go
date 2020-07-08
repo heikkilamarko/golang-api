@@ -10,16 +10,15 @@ import (
 
 type repository struct {
 	id       int
-	products map[int]*product
+	products map[int]*Product
 }
 
-// Initialize method
-func (repo *repository) Initialize() {
-	repo.products = map[int]*product{}
+func (repo *repository) initialize() {
+	repo.products = map[int]*Product{}
 
 	repo.id = 1
 
-	repo.products[1] = &product{
+	repo.products[1] = &Product{
 		ID:          repo.id,
 		Name:        "Inmem product 1",
 		Description: "Inmem description 1",
@@ -29,7 +28,7 @@ func (repo *repository) Initialize() {
 
 	repo.id++
 
-	repo.products[2] = &product{
+	repo.products[2] = &Product{
 		ID:          repo.id,
 		Name:        "Inmem product 2",
 		Description: "Inmem description 2",
@@ -40,8 +39,8 @@ func (repo *repository) Initialize() {
 	repo.id++
 }
 
-func (repo *repository) getProducts(ctx context.Context, query *getProductsQuery) ([]*product, error) {
-	products := []*product{}
+func (repo *repository) GetProducts(ctx context.Context, query *GetProductsQuery) ([]*Product, error) {
+	products := []*Product{}
 
 	for _, product := range repo.products {
 		products = append(products, product)
@@ -54,9 +53,9 @@ func (repo *repository) getProducts(ctx context.Context, query *getProductsQuery
 	return products, nil
 }
 
-func (repo *repository) getProduct(ctx context.Context, id int) (*product, error) {
+func (repo *repository) GetProduct(ctx context.Context, query *GetProductQuery) (*Product, error) {
 
-	product, ok := repo.products[id]
+	product, ok := repo.products[query.ID]
 
 	if !ok {
 		return nil, utils.ErrNotFound
@@ -65,14 +64,17 @@ func (repo *repository) getProduct(ctx context.Context, id int) (*product, error
 	return product, nil
 }
 
-func (repo *repository) createProduct(ctx context.Context, p *product) error {
+func (repo *repository) CreateProduct(ctx context.Context, command *CreateProductCommand) error {
+	p := command.Product
 	p.ID = repo.id
 	repo.id++
 	repo.products[p.ID] = p
 	return nil
 }
 
-func (repo *repository) updateProduct(ctx context.Context, p *product) error {
+func (repo *repository) UpdateProduct(ctx context.Context, command *UpdateProductCommand) error {
+	p := command.Product
+
 	product, ok := repo.products[p.ID]
 
 	if !ok {
@@ -84,14 +86,14 @@ func (repo *repository) updateProduct(ctx context.Context, p *product) error {
 	return nil
 }
 
-func (repo *repository) deleteProduct(ctx context.Context, id int) error {
-	_, ok := repo.products[id]
+func (repo *repository) DeleteProduct(ctx context.Context, command *DeleteProductCommand) error {
+	_, ok := repo.products[command.ID]
 
 	if !ok {
 		return utils.ErrNotFound
 	}
 
-	delete(repo.products, id)
+	delete(repo.products, command.ID)
 
 	return nil
 }

@@ -17,7 +17,7 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := c.Repository.updateProduct(r.Context(), v.command.product); err != nil {
+	if err := c.Repository.UpdateProduct(r.Context(), v.command); err != nil {
 		switch err {
 		case utils.ErrNotFound:
 			utils.WriteNotFound(w, nil)
@@ -27,12 +27,12 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteOK(w, v.command.product, nil)
+	utils.WriteOK(w, v.command.Product, nil)
 }
 
 type updateProductCommandValidator struct {
 	utils.RequestValidator
-	command *updateProductCommand
+	command *UpdateProductCommand
 }
 
 func (v *updateProductCommandValidator) parseAndValidate() {
@@ -43,7 +43,7 @@ func (v *updateProductCommandValidator) parseAndValidate() {
 		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
 	}
 
-	product := &product{}
+	product := &Product{}
 	if err := json.NewDecoder(v.Request.Body).Decode(product); err != nil {
 		validationErrors[constants.FieldRequestBody] = constants.ErrCodeInvalidPayload
 	}
@@ -60,6 +60,6 @@ func (v *updateProductCommandValidator) parseAndValidate() {
 	if 0 < len(validationErrors) {
 		v.ValidationErrors = validationErrors
 	} else {
-		v.command = &updateProductCommand{product}
+		v.command = &UpdateProductCommand{product}
 	}
 }

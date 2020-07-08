@@ -20,8 +20,7 @@ type repository struct {
 	db *sql.DB
 }
 
-// Initialize method
-func (repo *repository) Initialize() {
+func (repo *repository) initialize() {
 	connectionString := fmt.Sprintf(
 		"host=%s port=%s dbname=%s user=%s password=%s sslmode=require",
 		config.Config.DBHost,
@@ -39,7 +38,7 @@ func (repo *repository) Initialize() {
 	repo.db = db
 }
 
-func (repo *repository) getProducts(ctx context.Context, query *getProductsQuery) ([]*product, error) {
+func (repo *repository) GetProducts(ctx context.Context, query *GetProductsQuery) ([]*Product, error) {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
 
@@ -60,10 +59,10 @@ func (repo *repository) getProducts(ctx context.Context, query *getProductsQuery
 
 	defer rows.Close()
 
-	products := []*product{}
+	products := []*Product{}
 
 	for rows.Next() {
-		p := &product{}
+		p := &Product{}
 
 		var description sql.NullString
 		var comment sql.NullString
@@ -82,14 +81,14 @@ func (repo *repository) getProducts(ctx context.Context, query *getProductsQuery
 	return products, nil
 }
 
-func (repo *repository) getProduct(ctx context.Context, id int) (*product, error) {
+func (repo *repository) GetProduct(ctx context.Context, query *GetProductQuery) (*Product, error) {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
 
 	var description sql.NullString
 	var comment sql.NullString
 
-	p := &product{}
+	p := &Product{}
 
 	err := repo.db.QueryRowContext(
 		ctx,
@@ -98,7 +97,7 @@ func (repo *repository) getProduct(ctx context.Context, id int) (*product, error
 		FROM products.products
 		WHERE id=$1
 		`,
-		id).Scan(&p.ID, &p.Name, &description, &p.Price, &comment)
+		query.ID).Scan(&p.ID, &p.Name, &description, &p.Price, &comment)
 
 	if err != nil {
 		log.Err(err).Send()
@@ -116,9 +115,11 @@ func (repo *repository) getProduct(ctx context.Context, id int) (*product, error
 	return p, nil
 }
 
-func (repo *repository) createProduct(ctx context.Context, p *product) error {
+func (repo *repository) CreateProduct(ctx context.Context, command *CreateProductCommand) error {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
+
+	p := command.Product
 
 	err := repo.db.QueryRowContext(
 		ctx,
@@ -137,9 +138,11 @@ func (repo *repository) createProduct(ctx context.Context, p *product) error {
 	return nil
 }
 
-func (repo *repository) updateProduct(ctx context.Context, p *product) error {
+func (repo *repository) UpdateProduct(ctx context.Context, command *UpdateProductCommand) error {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
+
+	p := command.Product
 
 	result, err := repo.db.ExecContext(
 		ctx,
@@ -169,7 +172,7 @@ func (repo *repository) updateProduct(ctx context.Context, p *product) error {
 	return nil
 }
 
-func (repo *repository) deleteProduct(ctx context.Context, id int) error {
+func (repo *repository) DeleteProduct(ctx context.Context, command *DeleteProductCommand) error {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
 
@@ -179,7 +182,7 @@ func (repo *repository) deleteProduct(ctx context.Context, id int) error {
 		DELETE FROM products.products
 		WHERE id=$1
 		`,
-		id)
+		command.ID)
 
 	if err != nil {
 		log.Err(err).Send()
