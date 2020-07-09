@@ -1,12 +1,9 @@
 package config
 
-import "os"
+import "fmt"
 
-// Config global var
-var Config *AppConfig = &AppConfig{}
-
-// AppConfig struct
-type AppConfig struct {
+// Config struct
+type Config struct {
 	Port        string
 	DBHost      string
 	DBPort      string
@@ -17,13 +14,13 @@ type AppConfig struct {
 	CorsEnabled bool
 }
 
-func init() {
-	Config.Port = os.Getenv("APP_PORT")
-	Config.DBHost = os.Getenv("APP_DB_HOST")
-	Config.DBName = os.Getenv("APP_DB_NAME")
-	Config.DBPort = os.Getenv("APP_DB_PORT")
-	Config.DBUsername = os.Getenv("APP_DB_USERNAME")
-	Config.DBPassword = os.Getenv("APP_DB_PASSWORD")
-	Config.APIKey = os.Getenv("APP_API_KEY")
-	Config.CorsEnabled = os.Getenv("APP_CORS_ENABLED") == "true"
+// PostgresConnectionString method
+func (c *Config) PostgresConnectionString() string {
+	return fmt.Sprintf(
+		"host=%s port=%s dbname=%s user=%s password=%s sslmode=require",
+		c.DBHost,
+		c.DBPort,
+		c.DBName,
+		c.DBUsername,
+		c.DBPassword)
 }

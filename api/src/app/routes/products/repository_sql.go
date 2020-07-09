@@ -1,48 +1,30 @@
-// +build data_postgresql
-
 package products
 
 import (
 	"context"
 	"database/sql"
-	"fmt"
-	"products-api/app/config"
 	"products-api/app/constants"
 	"products-api/app/utils"
 
 	"github.com/rs/zerolog/log"
-
-	// PostgreSQL driver
-	_ "github.com/lib/pq"
 )
 
-type repository struct {
+// SQLRepository struct
+type SQLRepository struct {
 	db *sql.DB
 }
 
-func (repo *repository) initialize() {
-	connectionString := fmt.Sprintf(
-		"host=%s port=%s dbname=%s user=%s password=%s sslmode=require",
-		config.Config.DBHost,
-		config.Config.DBPort,
-		config.Config.DBName,
-		config.Config.DBUsername,
-		config.Config.DBPassword)
-
-	db, err := sql.Open("postgres", connectionString)
-
-	if err != nil {
-		log.Fatal().Err(err).Send()
-	}
-
-	repo.db = db
+// NewSQLRepository func
+func NewSQLRepository(db *sql.DB) *SQLRepository {
+	return &SQLRepository{db}
 }
 
-func (repo *repository) GetProducts(ctx context.Context, query *GetProductsQuery) ([]*Product, error) {
+// GetProducts method
+func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery) ([]*Product, error) {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
 
-	rows, err := repo.db.QueryContext(
+	rows, err := r.db.QueryContext(
 		ctx,
 		`
 		SELECT id, name, description, price, comment
@@ -81,7 +63,8 @@ func (repo *repository) GetProducts(ctx context.Context, query *GetProductsQuery
 	return products, nil
 }
 
-func (repo *repository) GetProduct(ctx context.Context, query *GetProductQuery) (*Product, error) {
+// GetProduct method
+func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) (*Product, error) {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
 
@@ -90,7 +73,7 @@ func (repo *repository) GetProduct(ctx context.Context, query *GetProductQuery) 
 
 	p := &Product{}
 
-	err := repo.db.QueryRowContext(
+	err := r.db.QueryRowContext(
 		ctx,
 		`
 		SELECT id, name, description, price, comment
@@ -115,13 +98,14 @@ func (repo *repository) GetProduct(ctx context.Context, query *GetProductQuery) 
 	return p, nil
 }
 
-func (repo *repository) CreateProduct(ctx context.Context, command *CreateProductCommand) error {
+// CreateProduct method
+func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProductCommand) error {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
 
 	p := command.Product
 
-	err := repo.db.QueryRowContext(
+	err := r.db.QueryRowContext(
 		ctx,
 		`
 		INSERT INTO products.products(name, description, price, comment)
@@ -138,13 +122,14 @@ func (repo *repository) CreateProduct(ctx context.Context, command *CreateProduc
 	return nil
 }
 
-func (repo *repository) UpdateProduct(ctx context.Context, command *UpdateProductCommand) error {
+// UpdateProduct method
+func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProductCommand) error {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
 
 	p := command.Product
 
-	result, err := repo.db.ExecContext(
+	result, err := r.db.ExecContext(
 		ctx,
 		`
 		UPDATE products.products
@@ -172,11 +157,12 @@ func (repo *repository) UpdateProduct(ctx context.Context, command *UpdateProduc
 	return nil
 }
 
-func (repo *repository) DeleteProduct(ctx context.Context, command *DeleteProductCommand) error {
+// DeleteProduct method
+func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProductCommand) error {
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
 
-	result, err := repo.db.ExecContext(
+	result, err := r.db.ExecContext(
 		ctx,
 		`
 		DELETE FROM products.products

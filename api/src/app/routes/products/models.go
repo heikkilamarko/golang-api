@@ -1,5 +1,7 @@
 package products
 
+import "context"
+
 // Product struct
 type Product struct {
 	ID          int     `json:"id"`
@@ -33,4 +35,13 @@ type UpdateProductCommand struct {
 // DeleteProductCommand struct
 type DeleteProductCommand struct {
 	ID int
+}
+
+// Repository interface
+type Repository interface {
+	GetProducts(context.Context, *GetProductsQuery) ([]*Product, error)
+	GetProduct(context.Context, *GetProductQuery) (*Product, error)
+	CreateProduct(context.Context, *CreateProductCommand) error
+	UpdateProduct(context.Context, *UpdateProductCommand) error
+	DeleteProduct(context.Context, *DeleteProductCommand) error
 }
