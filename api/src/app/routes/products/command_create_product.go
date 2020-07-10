@@ -9,8 +9,7 @@ import (
 
 // CreateProduct command
 func (c *Controller) CreateProduct(w http.ResponseWriter, r *http.Request) {
-	p := newCreateProductRequestParser(r)
-	p.parse()
+	p := newCreateProductRequestParser(r).parse()
 
 	if !p.IsValid() {
 		utils.WriteBadRequest(w, p.ValidationErrors)
@@ -34,7 +33,7 @@ type createProductRequestParser struct {
 	command *CreateProductCommand
 }
 
-func (p *createProductRequestParser) parse() {
+func (p *createProductRequestParser) parse() *createProductRequestParser {
 	validationErrors := map[string]string{}
 
 	product := &Product{}
@@ -47,4 +46,6 @@ func (p *createProductRequestParser) parse() {
 	} else {
 		p.command = &CreateProductCommand{product}
 	}
+
+	return p
 }

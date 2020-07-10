@@ -24,6 +24,20 @@ func (a *App) loggerMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func (a *App) recoveryMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		defer func() {
+			if err := recover(); err != nil {
+				a.Logger.Error().Msgf("%s", err)
+				utils.WriteInternalError(w, nil)
+			}
+		}()
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (a *App) authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -34,20 +48,6 @@ func (a *App) authMiddleware(next http.Handler) http.Handler {
 			utils.WriteUnauthorized(w, nil)
 			return
 		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-func (a *App) recoveryMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		defer func() {
-			if err := recover(); err != nil {
-				a.Logger.Error().Msgf("%s", err)
-				utils.WriteInternalError(w, nil)
-			}
-		}()
 
 		next.ServeHTTP(w, r)
 	})

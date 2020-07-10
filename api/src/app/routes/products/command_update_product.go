@@ -9,8 +9,7 @@ import (
 
 // UpdateProduct command
 func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	p := newUpdateProductRequestParser(r)
-	p.parse()
+	p := newUpdateProductRequestParser(r).parse()
 
 	if !p.IsValid() {
 		utils.WriteBadRequest(w, p.ValidationErrors)
@@ -39,7 +38,7 @@ type updateProductRequestParser struct {
 	command *UpdateProductCommand
 }
 
-func (p *updateProductRequestParser) parse() {
+func (p *updateProductRequestParser) parse() *updateProductRequestParser {
 	validationErrors := map[string]string{}
 
 	id, err := utils.GetRequestVarInt(p.Request, constants.FieldID)
@@ -54,7 +53,7 @@ func (p *updateProductRequestParser) parse() {
 
 	if 0 < len(validationErrors) {
 		p.ValidationErrors = validationErrors
-		return
+		return p
 	}
 
 	if id != product.ID {
@@ -66,4 +65,6 @@ func (p *updateProductRequestParser) parse() {
 	} else {
 		p.command = &UpdateProductCommand{product}
 	}
+
+	return p
 }
