@@ -34,17 +34,17 @@ type createProductRequestParser struct {
 	command *CreateProductCommand
 }
 
-func (v *createProductRequestParser) parse() {
+func (p *createProductRequestParser) parse() {
 	validationErrors := map[string]string{}
 
 	product := &Product{}
-	if err := json.NewDecoder(v.Request.Body).Decode(product); err != nil {
+	if err := json.NewDecoder(p.Request.Body).Decode(product); err != nil {
 		validationErrors[constants.FieldRequestBody] = constants.ErrCodeInvalidPayload
 	}
 
 	if 0 < len(validationErrors) {
-		v.ValidationErrors = validationErrors
+		p.ValidationErrors = validationErrors
 	} else {
-		v.command = &CreateProductCommand{product}
+		p.command = &CreateProductCommand{product}
 	}
 }

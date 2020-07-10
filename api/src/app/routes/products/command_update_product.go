@@ -39,21 +39,21 @@ type updateProductRequestParser struct {
 	command *UpdateProductCommand
 }
 
-func (v *updateProductRequestParser) parse() {
+func (p *updateProductRequestParser) parse() {
 	validationErrors := map[string]string{}
 
-	id, err := utils.GetRequestVarInt(v.Request, constants.FieldID)
+	id, err := utils.GetRequestVarInt(p.Request, constants.FieldID)
 	if err != nil {
 		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
 	}
 
 	product := &Product{}
-	if err := json.NewDecoder(v.Request.Body).Decode(product); err != nil {
+	if err := json.NewDecoder(p.Request.Body).Decode(product); err != nil {
 		validationErrors[constants.FieldRequestBody] = constants.ErrCodeInvalidPayload
 	}
 
 	if 0 < len(validationErrors) {
-		v.ValidationErrors = validationErrors
+		p.ValidationErrors = validationErrors
 		return
 	}
 
@@ -62,8 +62,8 @@ func (v *updateProductRequestParser) parse() {
 	}
 
 	if 0 < len(validationErrors) {
-		v.ValidationErrors = validationErrors
+		p.ValidationErrors = validationErrors
 	} else {
-		v.command = &UpdateProductCommand{product}
+		p.command = &UpdateProductCommand{product}
 	}
 }

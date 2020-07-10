@@ -40,17 +40,17 @@ type getProductRequestParser struct {
 	query *GetProductQuery
 }
 
-func (v *getProductRequestParser) parse() {
+func (p *getProductRequestParser) parse() {
 	validationErrors := map[string]string{}
 
-	id, err := utils.GetRequestVarInt(v.Request, constants.FieldID)
+	id, err := utils.GetRequestVarInt(p.Request, constants.FieldID)
 	if err != nil {
 		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
 	}
 
 	if 0 < len(validationErrors) {
-		v.ValidationErrors = validationErrors
+		p.ValidationErrors = validationErrors
 	} else {
-		v.query = &GetProductQuery{id}
+		p.query = &GetProductQuery{id}
 	}
 }

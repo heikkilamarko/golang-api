@@ -35,7 +35,7 @@ type getProductsRequestParser struct {
 	query *GetProductsQuery
 }
 
-func (v *getProductsRequestParser) parse() {
+func (p *getProductsRequestParser) parse() {
 	validationErrors := map[string]string{}
 
 	var offset int = 0
@@ -43,14 +43,14 @@ func (v *getProductsRequestParser) parse() {
 
 	var err error = nil
 
-	if value := utils.GetRequestFormValueString(v.Request, constants.FieldPaginationOffset); value != "" {
+	if value := utils.GetRequestFormValueString(p.Request, constants.FieldPaginationOffset); value != "" {
 		offset, err = utils.ParseInt(value)
 		if err != nil || offset < 0 {
 			validationErrors[constants.FieldPaginationOffset] = constants.ErrCodeInvalidOffset
 		}
 	}
 
-	if value := utils.GetRequestFormValueString(v.Request, constants.FieldPaginationLimit); value != "" {
+	if value := utils.GetRequestFormValueString(p.Request, constants.FieldPaginationLimit); value != "" {
 		limit, err = utils.ParseInt(value)
 		if err != nil || limit < 1 || constants.PaginationLimitMax < limit {
 			validationErrors[constants.FieldPaginationLimit] = constants.ErrCodeInvalidLimit
@@ -58,8 +58,8 @@ func (v *getProductsRequestParser) parse() {
 	}
 
 	if 0 < len(validationErrors) {
-		v.ValidationErrors = validationErrors
+		p.ValidationErrors = validationErrors
 	} else {
-		v.query = &GetProductsQuery{offset, limit}
+		p.query = &GetProductsQuery{offset, limit}
 	}
 }
