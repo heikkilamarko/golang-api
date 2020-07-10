@@ -19,22 +19,22 @@ type GetProductsQuery struct {
 
 // GetProductQuery struct
 type GetProductQuery struct {
-	ID int
+	ID int `json:"id"`
 }
 
 // CreateProductCommand struct
 type CreateProductCommand struct {
-	Product *Product
+	Product *Product `json:"product"`
 }
 
 // UpdateProductCommand struct
 type UpdateProductCommand struct {
-	Product *Product
+	Product *Product `json:"product"`
 }
 
 // DeleteProductCommand struct
 type DeleteProductCommand struct {
-	ID int
+	ID int `json:"id"`
 }
 
 // Repository interface
