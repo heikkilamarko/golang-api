@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 
 	// PostgreSQL driver
 	_ "github.com/lib/pq"
@@ -18,11 +18,12 @@ import (
 // App struct
 type App struct {
 	Config *config.Config
+	Logger *zerolog.Logger
 }
 
 // New func
-func New(c *config.Config) *App {
-	return &App{c}
+func New(c *config.Config, l *zerolog.Logger) *App {
+	return &App{c, l}
 }
 
 // Run method
@@ -30,10 +31,10 @@ func (a *App) Run() {
 	db, err := sql.Open("postgres", a.Config.PostgresConnectionString())
 
 	if err != nil {
-		log.Fatal().Err(err).Send()
+		a.Logger.Fatal().Err(err).Send()
 	}
 
-	pr := products.NewSQLRepository(db)
+	pr := products.NewSQLRepository(db, a.Logger)
 	pc := products.NewController(pr)
 
 	router := mux.NewRouter()
@@ -64,15 +65,14 @@ func (a *App) Run() {
 	var handler http.Handler = router
 
 	if a.Config.CorsEnabled {
-		log.Info().Msgf("CORS is enabled")
 		handler = cors.AllowAll().Handler(router)
 	}
 
 	addr := fmt.Sprintf(":%s", a.Config.Port)
 
-	log.Info().Msgf("Application running at %s", addr)
+	a.Logger.Info().Msgf("Application running at %s", addr)
 
 	if err := http.ListenAndServe(addr, handler); err != nil {
-		log.Fatal().Err(err).Send()
+		a.Logger.Fatal().Err(err).Send()
 	}
 }

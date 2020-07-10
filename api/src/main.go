@@ -4,6 +4,8 @@ import (
 	"os"
 	"products-api/app"
 	"products-api/app/config"
+
+	"github.com/rs/zerolog"
 )
 
 func main() {
@@ -19,7 +21,9 @@ func main() {
 		CorsEnabled: os.Getenv("APP_CORS_ENABLED") == "true",
 	}
 
-	a := app.New(c)
+	l := zerolog.New(os.Stderr).With().Timestamp().Logger()
+
+	a := app.New(c, &l)
 
 	a.Run()
 }

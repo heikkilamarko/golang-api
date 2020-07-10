@@ -6,8 +6,6 @@ import (
 	"products-api/app/constants"
 	"products-api/app/utils"
 	"time"
-
-	"github.com/rs/zerolog/log"
 )
 
 func (a *App) loggerMiddleware(next http.Handler) http.Handler {
@@ -18,7 +16,7 @@ func (a *App) loggerMiddleware(next http.Handler) http.Handler {
 		lw := utils.NewLoggingResponseWriter(w)
 		next.ServeHTTP(lw, r)
 
-		log.Info().
+		a.Logger.Info().
 			Str("request", fmt.Sprintf("%s %s", r.Method, r.RequestURI)).
 			Str("status", fmt.Sprint(lw.StatusCode)).
 			Str("duration", fmt.Sprint(time.Since(t))).
@@ -46,7 +44,7 @@ func (a *App) recoveryMiddleware(next http.Handler) http.Handler {
 
 		defer func() {
 			if err := recover(); err != nil {
-				log.Error().Msgf("%s", err)
+				a.Logger.Error().Msgf("%s", err)
 				utils.WriteInternalError(w, nil)
 			}
 		}()

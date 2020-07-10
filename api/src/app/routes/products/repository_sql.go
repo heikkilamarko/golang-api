@@ -6,17 +6,18 @@ import (
 	"products-api/app/constants"
 	"products-api/app/utils"
 
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 // SQLRepository struct
 type SQLRepository struct {
-	db *sql.DB
+	db     *sql.DB
+	logger *zerolog.Logger
 }
 
 // NewSQLRepository func
-func NewSQLRepository(db *sql.DB) *SQLRepository {
-	return &SQLRepository{db}
+func NewSQLRepository(db *sql.DB, l *zerolog.Logger) *SQLRepository {
+	return &SQLRepository{db, l}
 }
 
 // GetProducts method
@@ -35,7 +36,7 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 		query.Limit, query.Offset)
 
 	if err != nil {
-		log.Err(err).Send()
+		r.logger.Err(err).Send()
 		return nil, utils.ErrInternalError
 	}
 
@@ -50,7 +51,7 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 		var comment sql.NullString
 
 		if err := rows.Scan(&p.ID, &p.Name, &description, &p.Price, &comment); err != nil {
-			log.Err(err).Send()
+			r.logger.Err(err).Send()
 			return nil, utils.ErrInternalError
 		}
 
@@ -83,7 +84,7 @@ func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) 
 		query.ID).Scan(&p.ID, &p.Name, &description, &p.Price, &comment)
 
 	if err != nil {
-		log.Err(err).Send()
+		r.logger.Err(err).Send()
 		switch err {
 		case sql.ErrNoRows:
 			return nil, utils.ErrNotFound
@@ -115,7 +116,7 @@ func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProduc
 		p.Name, p.Description, p.Price, p.Comment).Scan(&p.ID)
 
 	if err != nil {
-		log.Err(err).Send()
+		r.logger.Err(err).Send()
 		return utils.ErrInternalError
 	}
 
@@ -139,14 +140,14 @@ func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProduc
 		p.Name, p.Description, p.Price, p.Comment, p.ID)
 
 	if err != nil {
-		log.Err(err).Send()
+		r.logger.Err(err).Send()
 		return utils.ErrInternalError
 	}
 
 	count, err := result.RowsAffected()
 
 	if err != nil {
-		log.Err(err).Send()
+		r.logger.Err(err).Send()
 		return utils.ErrInternalError
 	}
 
@@ -171,14 +172,14 @@ func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProduc
 		command.ID)
 
 	if err != nil {
-		log.Err(err).Send()
+		r.logger.Err(err).Send()
 		return utils.ErrInternalError
 	}
 
 	count, err := result.RowsAffected()
 
 	if err != nil {
-		log.Err(err).Send()
+		r.logger.Err(err).Send()
 		return utils.ErrInternalError
 	}
 
