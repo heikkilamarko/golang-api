@@ -8,8 +8,8 @@ import (
 
 // GetProduct query
 func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
-	v := getProductQueryValidator{utils.RequestValidator{Request: r}, nil}
-	v.parseAndValidate()
+	v := newGetProductQueryParser(r)
+	v.parse()
 
 	if !v.IsValid() {
 		utils.WriteBadRequest(w, v.ValidationErrors)
@@ -31,12 +31,16 @@ func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
 	utils.WriteOK(w, product, nil)
 }
 
-type getProductQueryValidator struct {
+func newGetProductQueryParser(r *http.Request) *getProductQueryParser {
+	return &getProductQueryParser{utils.RequestValidator{Request: r}, nil}
+}
+
+type getProductQueryParser struct {
 	utils.RequestValidator
 	query *GetProductQuery
 }
 
-func (v *getProductQueryValidator) parseAndValidate() {
+func (v *getProductQueryParser) parse() {
 	validationErrors := map[string]string{}
 
 	id, err := utils.GetRequestVarInt(v.Request, constants.FieldID)

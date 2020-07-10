@@ -8,8 +8,8 @@ import (
 
 // DeleteProduct command
 func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
-	v := deleteProductCommandValidator{utils.RequestValidator{Request: r}, nil}
-	v.parseAndValidate()
+	v := newDeleteProductCommandParser(r)
+	v.parse()
 
 	if !v.IsValid() {
 		utils.WriteBadRequest(w, v.ValidationErrors)
@@ -29,12 +29,16 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	utils.WriteNoContent(w)
 }
 
-type deleteProductCommandValidator struct {
+func newDeleteProductCommandParser(r *http.Request) *deleteProductCommandParser {
+	return &deleteProductCommandParser{utils.RequestValidator{Request: r}, nil}
+}
+
+type deleteProductCommandParser struct {
 	utils.RequestValidator
 	command *DeleteProductCommand
 }
 
-func (v *deleteProductCommandValidator) parseAndValidate() {
+func (v *deleteProductCommandParser) parse() {
 	validationErrors := map[string]string{}
 
 	id, err := utils.GetRequestVarInt(v.Request, constants.FieldID)

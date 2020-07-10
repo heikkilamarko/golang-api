@@ -9,8 +9,8 @@ import (
 
 // UpdateProduct command
 func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	v := updateProductCommandValidator{utils.RequestValidator{Request: r}, nil}
-	v.parseAndValidate()
+	v := newUpdateProductCommandParser(r)
+	v.parse()
 
 	if !v.IsValid() {
 		utils.WriteBadRequest(w, v.ValidationErrors)
@@ -30,12 +30,16 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	utils.WriteOK(w, v.command.Product, nil)
 }
 
-type updateProductCommandValidator struct {
+func newUpdateProductCommandParser(r *http.Request) *updateProductCommandParser {
+	return &updateProductCommandParser{utils.RequestValidator{Request: r}, nil}
+}
+
+type updateProductCommandParser struct {
 	utils.RequestValidator
 	command *UpdateProductCommand
 }
 
-func (v *updateProductCommandValidator) parseAndValidate() {
+func (v *updateProductCommandParser) parse() {
 	validationErrors := map[string]string{}
 
 	id, err := utils.GetRequestVarInt(v.Request, constants.FieldID)

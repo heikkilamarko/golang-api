@@ -8,8 +8,8 @@ import (
 
 // GetProducts query
 func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
-	v := getProductsQueryValidator{utils.RequestValidator{Request: r}, nil}
-	v.parseAndValidate()
+	v := newGetProductsQueryParser(r)
+	v.parse()
 
 	if !v.IsValid() {
 		utils.WriteBadRequest(w, v.ValidationErrors)
@@ -26,18 +26,20 @@ func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
 	utils.WriteOK(w, products, v.query)
 }
 
-type getProductsQueryValidator struct {
+func newGetProductsQueryParser(r *http.Request) *getProductsQueryParser {
+	return &getProductsQueryParser{utils.RequestValidator{Request: r}, nil}
+}
+
+type getProductsQueryParser struct {
 	utils.RequestValidator
 	query *GetProductsQuery
 }
 
-const limitMax = 100
-
-func (v *getProductsQueryValidator) parseAndValidate() {
+func (v *getProductsQueryParser) parse() {
 	validationErrors := map[string]string{}
 
 	var offset int = 0
-	var limit int = limitMax
+	var limit int = constants.PaginationLimitMax
 
 	var err error = nil
 
@@ -50,7 +52,7 @@ func (v *getProductsQueryValidator) parseAndValidate() {
 
 	if value := utils.GetRequestFormValueString(v.Request, constants.FieldPaginationLimit); value != "" {
 		limit, err = utils.ParseInt(value)
-		if err != nil || limit < 1 || limitMax < limit {
+		if err != nil || limit < 1 || constants.PaginationLimitMax < limit {
 			validationErrors[constants.FieldPaginationLimit] = constants.ErrCodeInvalidLimit
 		}
 	}
