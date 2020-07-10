@@ -8,15 +8,15 @@ import (
 
 // GetProduct query
 func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
-	v := newGetProductQueryParser(r)
-	v.parse()
+	p := newGetProductRequestParser(r)
+	p.parse()
 
-	if !v.IsValid() {
-		utils.WriteBadRequest(w, v.ValidationErrors)
+	if !p.IsValid() {
+		utils.WriteBadRequest(w, p.ValidationErrors)
 		return
 	}
 
-	product, err := c.Repository.GetProduct(r.Context(), v.query)
+	product, err := c.Repository.GetProduct(r.Context(), p.query)
 
 	if err != nil {
 		switch err {
@@ -31,16 +31,16 @@ func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
 	utils.WriteOK(w, product, nil)
 }
 
-func newGetProductQueryParser(r *http.Request) *getProductQueryParser {
-	return &getProductQueryParser{utils.RequestValidator{Request: r}, nil}
+func newGetProductRequestParser(r *http.Request) *getProductRequestParser {
+	return &getProductRequestParser{utils.RequestValidator{Request: r}, nil}
 }
 
-type getProductQueryParser struct {
+type getProductRequestParser struct {
 	utils.RequestValidator
 	query *GetProductQuery
 }
 
-func (v *getProductQueryParser) parse() {
+func (v *getProductRequestParser) parse() {
 	validationErrors := map[string]string{}
 
 	id, err := utils.GetRequestVarInt(v.Request, constants.FieldID)

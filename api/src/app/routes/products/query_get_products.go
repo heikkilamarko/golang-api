@@ -8,34 +8,34 @@ import (
 
 // GetProducts query
 func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
-	v := newGetProductsQueryParser(r)
-	v.parse()
+	p := newGetProductsRequestParser(r)
+	p.parse()
 
-	if !v.IsValid() {
-		utils.WriteBadRequest(w, v.ValidationErrors)
+	if !p.IsValid() {
+		utils.WriteBadRequest(w, p.ValidationErrors)
 		return
 	}
 
-	products, err := c.Repository.GetProducts(r.Context(), v.query)
+	products, err := c.Repository.GetProducts(r.Context(), p.query)
 
 	if err != nil {
 		utils.WriteInternalError(w, nil)
 		return
 	}
 
-	utils.WriteOK(w, products, v.query)
+	utils.WriteOK(w, products, p.query)
 }
 
-func newGetProductsQueryParser(r *http.Request) *getProductsQueryParser {
-	return &getProductsQueryParser{utils.RequestValidator{Request: r}, nil}
+func newGetProductsRequestParser(r *http.Request) *getProductsRequestParser {
+	return &getProductsRequestParser{utils.RequestValidator{Request: r}, nil}
 }
 
-type getProductsQueryParser struct {
+type getProductsRequestParser struct {
 	utils.RequestValidator
 	query *GetProductsQuery
 }
 
-func (v *getProductsQueryParser) parse() {
+func (v *getProductsRequestParser) parse() {
 	validationErrors := map[string]string{}
 
 	var offset int = 0

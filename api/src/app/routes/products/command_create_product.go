@@ -9,32 +9,32 @@ import (
 
 // CreateProduct command
 func (c *Controller) CreateProduct(w http.ResponseWriter, r *http.Request) {
-	v := newCreateProductCommandParser(r)
-	v.parse()
+	p := newCreateProductRequestParser(r)
+	p.parse()
 
-	if !v.IsValid() {
-		utils.WriteBadRequest(w, v.ValidationErrors)
+	if !p.IsValid() {
+		utils.WriteBadRequest(w, p.ValidationErrors)
 		return
 	}
 
-	if err := c.Repository.CreateProduct(r.Context(), v.command); err != nil {
+	if err := c.Repository.CreateProduct(r.Context(), p.command); err != nil {
 		utils.WriteInternalError(w, nil)
 		return
 	}
 
-	utils.WriteCreated(w, v.command.Product, nil)
+	utils.WriteCreated(w, p.command.Product, nil)
 }
 
-func newCreateProductCommandParser(r *http.Request) *createProductCommandParser {
-	return &createProductCommandParser{utils.RequestValidator{Request: r}, nil}
+func newCreateProductRequestParser(r *http.Request) *createProductRequestParser {
+	return &createProductRequestParser{utils.RequestValidator{Request: r}, nil}
 }
 
-type createProductCommandParser struct {
+type createProductRequestParser struct {
 	utils.RequestValidator
 	command *CreateProductCommand
 }
 
-func (v *createProductCommandParser) parse() {
+func (v *createProductRequestParser) parse() {
 	validationErrors := map[string]string{}
 
 	product := &Product{}

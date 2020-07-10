@@ -9,15 +9,15 @@ import (
 
 // UpdateProduct command
 func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	v := newUpdateProductCommandParser(r)
-	v.parse()
+	p := newUpdateProductRequestParser(r)
+	p.parse()
 
-	if !v.IsValid() {
-		utils.WriteBadRequest(w, v.ValidationErrors)
+	if !p.IsValid() {
+		utils.WriteBadRequest(w, p.ValidationErrors)
 		return
 	}
 
-	if err := c.Repository.UpdateProduct(r.Context(), v.command); err != nil {
+	if err := c.Repository.UpdateProduct(r.Context(), p.command); err != nil {
 		switch err {
 		case utils.ErrNotFound:
 			utils.WriteNotFound(w, nil)
@@ -27,19 +27,19 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteOK(w, v.command.Product, nil)
+	utils.WriteOK(w, p.command.Product, nil)
 }
 
-func newUpdateProductCommandParser(r *http.Request) *updateProductCommandParser {
-	return &updateProductCommandParser{utils.RequestValidator{Request: r}, nil}
+func newUpdateProductRequestParser(r *http.Request) *updateProductRequestParser {
+	return &updateProductRequestParser{utils.RequestValidator{Request: r}, nil}
 }
 
-type updateProductCommandParser struct {
+type updateProductRequestParser struct {
 	utils.RequestValidator
 	command *UpdateProductCommand
 }
 
-func (v *updateProductCommandParser) parse() {
+func (v *updateProductRequestParser) parse() {
 	validationErrors := map[string]string{}
 
 	id, err := utils.GetRequestVarInt(v.Request, constants.FieldID)

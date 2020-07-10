@@ -8,15 +8,15 @@ import (
 
 // DeleteProduct command
 func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
-	v := newDeleteProductCommandParser(r)
-	v.parse()
+	p := newDeleteProductRequestParser(r)
+	p.parse()
 
-	if !v.IsValid() {
-		utils.WriteBadRequest(w, v.ValidationErrors)
+	if !p.IsValid() {
+		utils.WriteBadRequest(w, p.ValidationErrors)
 		return
 	}
 
-	if err := c.Repository.DeleteProduct(r.Context(), v.command); err != nil {
+	if err := c.Repository.DeleteProduct(r.Context(), p.command); err != nil {
 		switch err {
 		case utils.ErrNotFound:
 			utils.WriteNotFound(w, nil)
@@ -29,16 +29,16 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	utils.WriteNoContent(w)
 }
 
-func newDeleteProductCommandParser(r *http.Request) *deleteProductCommandParser {
-	return &deleteProductCommandParser{utils.RequestValidator{Request: r}, nil}
+func newDeleteProductRequestParser(r *http.Request) *deleteProductRequestParser {
+	return &deleteProductRequestParser{utils.RequestValidator{Request: r}, nil}
 }
 
-type deleteProductCommandParser struct {
+type deleteProductRequestParser struct {
 	utils.RequestValidator
 	command *DeleteProductCommand
 }
 
-func (v *deleteProductCommandParser) parse() {
+func (v *deleteProductRequestParser) parse() {
 	validationErrors := map[string]string{}
 
 	id, err := utils.GetRequestVarInt(v.Request, constants.FieldID)
