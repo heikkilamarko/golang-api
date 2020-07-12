@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"products-api/app/constants"
-	"products-api/app/utils"
 	"time"
+
+	"github.com/heikkilamarko/goutils"
 )
 
 func (a *App) loggerMiddleware(next http.Handler) http.Handler {
@@ -13,7 +14,7 @@ func (a *App) loggerMiddleware(next http.Handler) http.Handler {
 
 		t := time.Now()
 
-		lw := utils.NewLoggingResponseWriter(w)
+		lw := goutils.NewExtendedResponseWriter(w)
 		next.ServeHTTP(lw, r)
 
 		a.Logger.Info().
@@ -30,7 +31,7 @@ func (a *App) recoveryMiddleware(next http.Handler) http.Handler {
 		defer func() {
 			if err := recover(); err != nil {
 				a.Logger.Error().Msgf("%s", err)
-				utils.WriteInternalError(w, nil)
+				goutils.WriteInternalError(w, nil)
 			}
 		}()
 
@@ -45,7 +46,7 @@ func (a *App) authMiddleware(next http.Handler) http.Handler {
 		actual := r.Header.Get(constants.HeaderAPIKey)
 
 		if actual != expected {
-			utils.WriteUnauthorized(w, nil)
+			goutils.WriteUnauthorized(w, nil)
 			return
 		}
 
@@ -54,5 +55,5 @@ func (a *App) authMiddleware(next http.Handler) http.Handler {
 }
 
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
-	utils.WriteNotFound(w, nil)
+	goutils.WriteNotFound(w, nil)
 }

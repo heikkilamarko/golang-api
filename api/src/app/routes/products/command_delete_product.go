@@ -3,7 +3,8 @@ package products
 import (
 	"net/http"
 	"products-api/app/constants"
-	"products-api/app/utils"
+
+	"github.com/heikkilamarko/goutils"
 )
 
 // DeleteProduct command
@@ -11,36 +12,36 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	p := newDeleteProductRequestParser(r).parse()
 
 	if !p.IsValid() {
-		utils.WriteBadRequest(w, p.ValidationErrors)
+		goutils.WriteBadRequest(w, p.ValidationErrors)
 		return
 	}
 
 	if err := c.Repository.DeleteProduct(r.Context(), p.command); err != nil {
 		switch err {
-		case utils.ErrNotFound:
-			utils.WriteNotFound(w, nil)
+		case goutils.ErrNotFound:
+			goutils.WriteNotFound(w, nil)
 		default:
-			utils.WriteInternalError(w, nil)
+			goutils.WriteInternalError(w, nil)
 		}
 		return
 	}
 
-	utils.WriteNoContent(w)
+	goutils.WriteNoContent(w)
 }
 
 func newDeleteProductRequestParser(r *http.Request) *deleteProductRequestParser {
-	return &deleteProductRequestParser{utils.RequestValidator{Request: r}, nil}
+	return &deleteProductRequestParser{goutils.RequestValidator{Request: r}, nil}
 }
 
 type deleteProductRequestParser struct {
-	utils.RequestValidator
+	goutils.RequestValidator
 	command *DeleteProductCommand
 }
 
 func (p *deleteProductRequestParser) parse() *deleteProductRequestParser {
 	validationErrors := map[string]string{}
 
-	id, err := utils.GetRequestVarInt(p.Request, constants.FieldID)
+	id, err := goutils.GetRequestVarInt(p.Request, constants.FieldID)
 	if err != nil {
 		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
 	}

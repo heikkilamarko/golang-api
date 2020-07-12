@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"products-api/app/constants"
-	"products-api/app/utils"
 
+	"github.com/heikkilamarko/goutils"
 	"github.com/rs/zerolog"
 )
 
@@ -37,7 +37,7 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 
 	if err != nil {
 		r.logger.Err(err).Send()
-		return nil, utils.ErrInternalError
+		return nil, goutils.ErrInternalError
 	}
 
 	defer rows.Close()
@@ -49,7 +49,7 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 
 		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment); err != nil {
 			r.logger.Err(err).Send()
-			return nil, utils.ErrInternalError
+			return nil, goutils.ErrInternalError
 		}
 
 		products = append(products, p)
@@ -78,9 +78,9 @@ func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) 
 		r.logger.Err(err).Send()
 		switch err {
 		case sql.ErrNoRows:
-			return nil, utils.ErrNotFound
+			return nil, goutils.ErrNotFound
 		default:
-			return nil, utils.ErrInternalError
+			return nil, goutils.ErrInternalError
 		}
 	}
 
@@ -105,7 +105,7 @@ func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProduc
 
 	if err != nil {
 		r.logger.Err(err).Send()
-		return utils.ErrInternalError
+		return goutils.ErrInternalError
 	}
 
 	return nil
@@ -129,18 +129,18 @@ func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProduc
 
 	if err != nil {
 		r.logger.Err(err).Send()
-		return utils.ErrInternalError
+		return goutils.ErrInternalError
 	}
 
 	count, err := result.RowsAffected()
 
 	if err != nil {
 		r.logger.Err(err).Send()
-		return utils.ErrInternalError
+		return goutils.ErrInternalError
 	}
 
 	if count < 1 {
-		return utils.ErrNotFound
+		return goutils.ErrNotFound
 	}
 
 	return nil
@@ -161,18 +161,18 @@ func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProduc
 
 	if err != nil {
 		r.logger.Err(err).Send()
-		return utils.ErrInternalError
+		return goutils.ErrInternalError
 	}
 
 	count, err := result.RowsAffected()
 
 	if err != nil {
 		r.logger.Err(err).Send()
-		return utils.ErrInternalError
+		return goutils.ErrInternalError
 	}
 
 	if count < 1 {
-		return utils.ErrNotFound
+		return goutils.ErrNotFound
 	}
 
 	return nil

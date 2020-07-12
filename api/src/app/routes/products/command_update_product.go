@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"products-api/app/constants"
-	"products-api/app/utils"
+
+	"github.com/heikkilamarko/goutils"
 )
 
 // UpdateProduct command
@@ -12,36 +13,36 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	p := newUpdateProductRequestParser(r).parse()
 
 	if !p.IsValid() {
-		utils.WriteBadRequest(w, p.ValidationErrors)
+		goutils.WriteBadRequest(w, p.ValidationErrors)
 		return
 	}
 
 	if err := c.Repository.UpdateProduct(r.Context(), p.command); err != nil {
 		switch err {
-		case utils.ErrNotFound:
-			utils.WriteNotFound(w, nil)
+		case goutils.ErrNotFound:
+			goutils.WriteNotFound(w, nil)
 		default:
-			utils.WriteInternalError(w, nil)
+			goutils.WriteInternalError(w, nil)
 		}
 		return
 	}
 
-	utils.WriteOK(w, p.command.Product, nil)
+	goutils.WriteOK(w, p.command.Product, nil)
 }
 
 func newUpdateProductRequestParser(r *http.Request) *updateProductRequestParser {
-	return &updateProductRequestParser{utils.RequestValidator{Request: r}, nil}
+	return &updateProductRequestParser{goutils.RequestValidator{Request: r}, nil}
 }
 
 type updateProductRequestParser struct {
-	utils.RequestValidator
+	goutils.RequestValidator
 	command *UpdateProductCommand
 }
 
 func (p *updateProductRequestParser) parse() *updateProductRequestParser {
 	validationErrors := map[string]string{}
 
-	id, err := utils.GetRequestVarInt(p.Request, constants.FieldID)
+	id, err := goutils.GetRequestVarInt(p.Request, constants.FieldID)
 	if err != nil {
 		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
 	}

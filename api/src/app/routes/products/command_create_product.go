@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"products-api/app/constants"
-	"products-api/app/utils"
+
+	"github.com/heikkilamarko/goutils"
 )
 
 // CreateProduct command
@@ -12,24 +13,24 @@ func (c *Controller) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	p := newCreateProductRequestParser(r).parse()
 
 	if !p.IsValid() {
-		utils.WriteBadRequest(w, p.ValidationErrors)
+		goutils.WriteBadRequest(w, p.ValidationErrors)
 		return
 	}
 
 	if err := c.Repository.CreateProduct(r.Context(), p.command); err != nil {
-		utils.WriteInternalError(w, nil)
+		goutils.WriteInternalError(w, nil)
 		return
 	}
 
-	utils.WriteCreated(w, p.command.Product, nil)
+	goutils.WriteCreated(w, p.command.Product, nil)
 }
 
 func newCreateProductRequestParser(r *http.Request) *createProductRequestParser {
-	return &createProductRequestParser{utils.RequestValidator{Request: r}, nil}
+	return &createProductRequestParser{goutils.RequestValidator{Request: r}, nil}
 }
 
 type createProductRequestParser struct {
-	utils.RequestValidator
+	goutils.RequestValidator
 	command *CreateProductCommand
 }
 
