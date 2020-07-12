@@ -47,16 +47,10 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 	for rows.Next() {
 		p := &Product{}
 
-		var description sql.NullString
-		var comment sql.NullString
-
-		if err := rows.Scan(&p.ID, &p.Name, &description, &p.Price, &comment); err != nil {
+		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment); err != nil {
 			r.logger.Err(err).Send()
 			return nil, utils.ErrInternalError
 		}
-
-		p.Description = utils.GetNullStringValue(description)
-		p.Comment = utils.GetNullStringValue(comment)
 
 		products = append(products, p)
 	}
@@ -69,9 +63,6 @@ func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) 
 	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
 	defer cancel()
 
-	var description sql.NullString
-	var comment sql.NullString
-
 	p := &Product{}
 
 	err := r.db.QueryRowContext(
@@ -81,7 +72,7 @@ func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) 
 		FROM products.products
 		WHERE id=$1
 		`,
-		query.ID).Scan(&p.ID, &p.Name, &description, &p.Price, &comment)
+		query.ID).Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment)
 
 	if err != nil {
 		r.logger.Err(err).Send()
@@ -92,9 +83,6 @@ func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) 
 			return nil, utils.ErrInternalError
 		}
 	}
-
-	p.Description = utils.GetNullStringValue(description)
-	p.Comment = utils.GetNullStringValue(comment)
 
 	return p, nil
 }
