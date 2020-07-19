@@ -4,16 +4,17 @@ import (
 	"encoding/json"
 	"net/http"
 	"products-api/app/constants"
+	"products-api/app/utils"
 
 	"github.com/heikkilamarko/goutils"
 )
 
 // UpdateProduct command
 func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	command, verr := parseUpdateProductRequest(r)
+	command, err := parseUpdateProductRequest(r)
 
-	if verr != nil {
-		goutils.WriteBadRequest(w, verr.ValidationErrors)
+	if err != nil {
+		utils.HandleParseRequestError(err, w)
 		return
 	}
 
@@ -30,7 +31,7 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	goutils.WriteOK(w, command.Product, nil)
 }
 
-func parseUpdateProductRequest(r *http.Request) (*UpdateProductCommand, *goutils.ValidationError) {
+func parseUpdateProductRequest(r *http.Request) (*UpdateProductCommand, error) {
 	validationErrors := map[string]string{}
 
 	id, err := goutils.GetRequestVarInt(r, constants.FieldID)

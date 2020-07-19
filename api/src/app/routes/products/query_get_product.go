@@ -3,16 +3,17 @@ package products
 import (
 	"net/http"
 	"products-api/app/constants"
+	"products-api/app/utils"
 
 	"github.com/heikkilamarko/goutils"
 )
 
 // GetProduct query
 func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
-	query, verr := parseGetProductRequest(r)
+	query, err := parseGetProductRequest(r)
 
-	if verr != nil {
-		goutils.WriteBadRequest(w, verr.ValidationErrors)
+	if err != nil {
+		utils.HandleParseRequestError(err, w)
 		return
 	}
 
@@ -31,7 +32,7 @@ func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
 	goutils.WriteOK(w, product, nil)
 }
 
-func parseGetProductRequest(r *http.Request) (*GetProductQuery, *goutils.ValidationError) {
+func parseGetProductRequest(r *http.Request) (*GetProductQuery, error) {
 	validationErrors := map[string]string{}
 
 	id, err := goutils.GetRequestVarInt(r, constants.FieldID)
