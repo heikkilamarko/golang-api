@@ -10,43 +10,32 @@ import (
 
 // CreateProduct command
 func (c *Controller) CreateProduct(w http.ResponseWriter, r *http.Request) {
-	p := newCreateProductRequestParser(r).parse()
+	command, verr := parseCreateProductRequest(r)
 
-	if !p.IsValid() {
-		goutils.WriteBadRequest(w, p.ValidationErrors)
+	if verr != nil {
+		goutils.WriteBadRequest(w, verr.ValidationErrors)
 		return
 	}
 
-	if err := c.Repository.CreateProduct(r.Context(), p.command); err != nil {
+	if err := c.Repository.CreateProduct(r.Context(), command); err != nil {
 		goutils.WriteInternalError(w, nil)
 		return
 	}
 
-	goutils.WriteCreated(w, p.command.Product, nil)
+	goutils.WriteCreated(w, command.Product, nil)
 }
 
-func newCreateProductRequestParser(r *http.Request) *createProductRequestParser {
-	return &createProductRequestParser{goutils.RequestValidator{Request: r}, nil}
-}
-
-type createProductRequestParser struct {
-	goutils.RequestValidator
-	command *CreateProductCommand
-}
-
-func (p *createProductRequestParser) parse() *createProductRequestParser {
+func parseCreateProductRequest(r *http.Request) (*CreateProductCommand, *goutils.ValidationError) {
 	validationErrors := map[string]string{}
 
 	product := &Product{}
-	if err := json.NewDecoder(p.Request.Body).Decode(product); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(product); err != nil {
 		validationErrors[constants.FieldRequestBody] = constants.ErrCodeInvalidPayload
 	}
 
 	if 0 < len(validationErrors) {
-		p.ValidationErrors = validationErrors
-	} else {
-		p.command = &CreateProductCommand{product}
+		return nil, goutils.NewValidationError(validationErrors)
 	}
 
-	return p
+	return &CreateProductCommand{product}, nil
 }

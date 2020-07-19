@@ -10,14 +10,14 @@ import (
 
 // UpdateProduct command
 func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	p := newUpdateProductRequestParser(r).parse()
+	command, verr := parseUpdateProductRequest(r)
 
-	if !p.IsValid() {
-		goutils.WriteBadRequest(w, p.ValidationErrors)
+	if verr != nil {
+		goutils.WriteBadRequest(w, verr.ValidationErrors)
 		return
 	}
 
-	if err := c.Repository.UpdateProduct(r.Context(), p.command); err != nil {
+	if err := c.Repository.UpdateProduct(r.Context(), command); err != nil {
 		switch err {
 		case goutils.ErrNotFound:
 			goutils.WriteNotFound(w, nil)
@@ -27,34 +27,24 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	goutils.WriteOK(w, p.command.Product, nil)
+	goutils.WriteOK(w, command.Product, nil)
 }
 
-func newUpdateProductRequestParser(r *http.Request) *updateProductRequestParser {
-	return &updateProductRequestParser{goutils.RequestValidator{Request: r}, nil}
-}
-
-type updateProductRequestParser struct {
-	goutils.RequestValidator
-	command *UpdateProductCommand
-}
-
-func (p *updateProductRequestParser) parse() *updateProductRequestParser {
+func parseUpdateProductRequest(r *http.Request) (*UpdateProductCommand, *goutils.ValidationError) {
 	validationErrors := map[string]string{}
 
-	id, err := goutils.GetRequestVarInt(p.Request, constants.FieldID)
+	id, err := goutils.GetRequestVarInt(r, constants.FieldID)
 	if err != nil {
 		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
 	}
 
 	product := &Product{}
-	if err := json.NewDecoder(p.Request.Body).Decode(product); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(product); err != nil {
 		validationErrors[constants.FieldRequestBody] = constants.ErrCodeInvalidPayload
 	}
 
 	if 0 < len(validationErrors) {
-		p.ValidationErrors = validationErrors
-		return p
+		return nil, goutils.NewValidationError(validationErrors)
 	}
 
 	if id != product.ID {
@@ -62,10 +52,8 @@ func (p *updateProductRequestParser) parse() *updateProductRequestParser {
 	}
 
 	if 0 < len(validationErrors) {
-		p.ValidationErrors = validationErrors
-	} else {
-		p.command = &UpdateProductCommand{product}
+		return nil, goutils.NewValidationError(validationErrors)
 	}
 
-	return p
+	return &UpdateProductCommand{product}, nil
 }

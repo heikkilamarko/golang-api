@@ -9,14 +9,14 @@ import (
 
 // GetProduct query
 func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
-	p := newGetProductRequestParser(r).parse()
+	query, verr := parseGetProductRequest(r)
 
-	if !p.IsValid() {
-		goutils.WriteBadRequest(w, p.ValidationErrors)
+	if verr != nil {
+		goutils.WriteBadRequest(w, verr.ValidationErrors)
 		return
 	}
 
-	product, err := c.Repository.GetProduct(r.Context(), p.query)
+	product, err := c.Repository.GetProduct(r.Context(), query)
 
 	if err != nil {
 		switch err {
@@ -31,28 +31,17 @@ func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
 	goutils.WriteOK(w, product, nil)
 }
 
-func newGetProductRequestParser(r *http.Request) *getProductRequestParser {
-	return &getProductRequestParser{goutils.RequestValidator{Request: r}, nil}
-}
-
-type getProductRequestParser struct {
-	goutils.RequestValidator
-	query *GetProductQuery
-}
-
-func (p *getProductRequestParser) parse() *getProductRequestParser {
+func parseGetProductRequest(r *http.Request) (*GetProductQuery, *goutils.ValidationError) {
 	validationErrors := map[string]string{}
 
-	id, err := goutils.GetRequestVarInt(p.Request, constants.FieldID)
+	id, err := goutils.GetRequestVarInt(r, constants.FieldID)
 	if err != nil {
 		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
 	}
 
 	if 0 < len(validationErrors) {
-		p.ValidationErrors = validationErrors
-	} else {
-		p.query = &GetProductQuery{id}
+		return nil, goutils.NewValidationError(validationErrors)
 	}
 
-	return p
+	return &GetProductQuery{id}, nil
 }
