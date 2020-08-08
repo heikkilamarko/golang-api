@@ -1,8 +1,7 @@
 {
   "extends": "@snowpack/app-scripts-svelte",
-  "scripts": {},
   "plugins": [
     ["@snowpack/plugin-svelte", { "immutable": true }],
-    ["@snowpack/plugin-webpack"]
+    ["@snowpack/plugin-webpack", {}]
   ]
 }
