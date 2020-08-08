@@ -1,11 +1,12 @@
 <script>
   import store from "./store";
 
+  let apiKey = "";
   let offset = 0;
   let limit = 10;
 
   function loadProducts() {
-    store.loadProducts({ offset, limit });
+    store.loadProducts({ offset, limit }, apiKey);
   }
 
   $: isOffsetValid =
@@ -21,6 +22,16 @@
 </script>
 
 <form>
+  <div class="form-row">
+    <div class="form-group col-md-2">
+      <label for="inputApiKey">API Key</label>
+      <input
+        type="text"
+        class="form-control"
+        id="inputApiKey"
+        bind:value={apiKey} />
+    </div>
+  </div>
   <div class="form-row">
     <div class="form-group col-md-2">
       <label for="inputOffset">Offset</label>

@@ -2,21 +2,21 @@ import { writable } from "svelte/store";
 import produce from "immer";
 import axios from "axios";
 import { alertError } from "./utils";
-import config from "./config";
+import { API_URL } from "./config";
 
 function createStore(initialValue) {
   const store = writable(initialValue);
 
   const { subscribe, update } = store;
 
-  async function loadProducts(query) {
+  async function loadProducts(query, apiKey) {
     query = query || {};
 
     setLoading(true);
 
     try {
-      const response = await axios.get(`${config.apiUrl}/products`, {
-        headers: { "X-Api-Key": config.apiKey },
+      const response = await axios.get(`${API_URL}/products`, {
+        headers: { "X-Api-Key": apiKey },
         params: { ...query },
       });
       setProducts(response.data);
