@@ -1,7 +1,8 @@
 <script>
+  import store from "./store";
   import ProductCard from "./ProductCard.svelte";
 
-  export let products = [];
+  $: products = $store.products.data || [];
 </script>
 
 {#each products as product (product.id)}
