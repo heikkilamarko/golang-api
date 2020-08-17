@@ -43,6 +43,10 @@ stages:
                     EOF
                   displayName: Create terraform.tfvars file
                   workingDirectory: $(Pipeline.Workspace)/infra-env
+                - task: terraformInstaller@0
+                  inputs:
+                    terraformVersion: "0.13.0"
+                  displayName: Install Terraform
                 - script: |
                     terraform init && terraform plan
                   displayName: Terraform plan
