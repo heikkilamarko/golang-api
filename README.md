@@ -1,4 +1,4 @@
-# Products API
+# A Simple RESTful API Written in Go
 
 ## API
 
