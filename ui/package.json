@@ -5,16 +5,16 @@
     "test": "jest"
   },
   "dependencies": {
-    "axios": "0.19.2",
-    "immer": "7.0.7",
-    "svelte": "3.24.1"
+    "axios": "0.20.0",
+    "immer": "7.0.9",
+    "svelte": "3.25.0"
   },
   "devDependencies": {
-    "@snowpack/app-scripts-svelte": "1.8.3",
-    "@snowpack/plugin-webpack": "2.0.3",
-    "@testing-library/jest-dom": "5.11.3",
+    "@snowpack/app-scripts-svelte": "1.8.4",
+    "@snowpack/plugin-webpack": "2.0.12",
+    "@testing-library/jest-dom": "5.11.4",
     "@testing-library/svelte": "3.0.0",
-    "jest": "26.4.0",
-    "snowpack": "2.7.7"
+    "jest": "26.4.2",
+    "snowpack": "2.11.0"
   }
 }
