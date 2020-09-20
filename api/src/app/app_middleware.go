@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"products-api/app/constants"
@@ -49,6 +50,18 @@ func (a *App) authMiddleware(next http.Handler) http.Handler {
 			goutils.WriteUnauthorized(w, nil)
 			return
 		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (a *App) timeoutMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		ctx, cancel := context.WithTimeout(r.Context(), constants.RequestTimeout)
+		defer cancel()
+
+		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)
 	})

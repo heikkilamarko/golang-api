@@ -3,7 +3,6 @@ package products
 import (
 	"context"
 	"database/sql"
-	"products-api/app/constants"
 
 	"github.com/heikkilamarko/goutils"
 	"github.com/rs/zerolog"
@@ -22,9 +21,6 @@ func NewSQLRepository(db *sql.DB, l *zerolog.Logger) *SQLRepository {
 
 // GetProducts method
 func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery) ([]*Product, error) {
-	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
-	defer cancel()
-
 	rows, err := r.db.QueryContext(
 		ctx,
 		`
@@ -60,9 +56,6 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 
 // GetProduct method
 func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) (*Product, error) {
-	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
-	defer cancel()
-
 	p := &Product{}
 
 	err := r.db.QueryRowContext(
@@ -89,9 +82,6 @@ func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) 
 
 // CreateProduct method
 func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProductCommand) error {
-	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
-	defer cancel()
-
 	p := command.Product
 
 	err := r.db.QueryRowContext(
@@ -113,9 +103,6 @@ func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProduc
 
 // UpdateProduct method
 func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProductCommand) error {
-	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
-	defer cancel()
-
 	p := command.Product
 
 	result, err := r.db.ExecContext(
@@ -148,9 +135,6 @@ func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProduc
 
 // DeleteProduct method
 func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProductCommand) error {
-	ctx, cancel := context.WithTimeout(ctx, constants.DBQueryTimeout)
-	defer cancel()
-
 	result, err := r.db.ExecContext(
 		ctx,
 		`

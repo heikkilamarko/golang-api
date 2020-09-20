@@ -43,6 +43,7 @@ func (a *App) Run() {
 		a.loggerMiddleware,
 		a.recoveryMiddleware,
 		a.authMiddleware,
+		a.timeoutMiddleware,
 	)
 
 	router.HandleFunc("/products", pc.GetProducts).
