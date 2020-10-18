@@ -131,6 +131,13 @@ resource "azurerm_monitor_diagnostic_setting" "env" {
   log_analytics_workspace_id = azurerm_log_analytics_workspace.env.id
 
   log {
+    category = "AppServiceAntivirusScanAuditLogs"
+    retention_policy {
+      enabled = false
+    }
+  }
+
+  log {
     category = "AppServiceHTTPLogs"
     retention_policy {
       enabled = false
