@@ -3,9 +3,9 @@
 ## API
 
 - Golang
-- OpenAPI 3.0 (design-first with Swagger Editor)
+- OpenAPI 3.0
 
 ## Database
 
-- Azure PostgreSQL Database
+- PostgreSQL
 - Flyway (database migrations)
