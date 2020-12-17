@@ -2,6 +2,7 @@
   "extends": "@snowpack/app-scripts-svelte",
   "plugins": [
     ["@snowpack/plugin-svelte", { "immutable": true }],
-    ["@snowpack/plugin-webpack", {}]
+    "@snowpack/plugin-dotenv",
+    "@snowpack/plugin-webpack"
   ]
 }

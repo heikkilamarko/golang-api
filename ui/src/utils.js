@@ -4,7 +4,7 @@ export const sleep = (ms) =>
 export function alertError(error) {
   let message = "Operation failed.";
 
-  const err = error.response.data.error;
+  const err = error.response?.data?.error;
 
   if (err) {
     const { code = "Bad Request", details } = err;
