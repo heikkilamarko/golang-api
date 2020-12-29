@@ -1,2 +1,2 @@
-// Package constants provides apllication constants.
+// Package constants provides application constants.
 package constants
