@@ -1,3 +1,4 @@
+// Package app provides application level functionality.
 package app
 
 import (

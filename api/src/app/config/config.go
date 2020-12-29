@@ -1,3 +1,4 @@
+// Package config provides application configuration functionality.
 package config
 
 import "fmt"
