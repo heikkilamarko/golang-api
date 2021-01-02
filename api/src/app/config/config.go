@@ -1,7 +1,10 @@
 // Package config provides application configuration functionality.
 package config
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 // Config struct
 type Config struct {
@@ -13,7 +16,7 @@ type Config struct {
 	DBPassword  string
 	DBSSLMode   string
 	APIKey      string
-	CorsEnabled bool
+	CORSEnabled bool
 }
 
 // PostgresConnectionString method
@@ -26,4 +29,13 @@ func (c *Config) PostgresConnectionString() string {
 		c.DBUsername,
 		c.DBPassword,
 		c.DBSSLMode)
+}
+
+// GetValue func
+func GetValue(key, fallback string) string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return fallback
+	}
+	return value
 }

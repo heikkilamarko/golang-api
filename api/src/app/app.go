@@ -66,7 +66,7 @@ func (a *App) Run() {
 
 	var handler http.Handler = router
 
-	if a.Config.CorsEnabled {
+	if a.Config.CORSEnabled {
 		handler = cors.AllowAll().Handler(router)
 	}
 
