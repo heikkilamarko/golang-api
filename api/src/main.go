@@ -17,6 +17,7 @@ func main() {
 		DBPort:      os.Getenv("APP_DB_PORT"),
 		DBUsername:  os.Getenv("APP_DB_USERNAME"),
 		DBPassword:  os.Getenv("APP_DB_PASSWORD"),
+		DBSSLMode:   os.Getenv("APP_DB_SSLMODE"),
 		APIKey:      os.Getenv("APP_API_KEY"),
 		CorsEnabled: os.Getenv("APP_CORS_ENABLED") == "true",
 	}

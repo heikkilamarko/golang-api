@@ -11,6 +11,7 @@ type Config struct {
 	DBName      string
 	DBUsername  string
 	DBPassword  string
+	DBSSLMode   string
 	APIKey      string
 	CorsEnabled bool
 }
@@ -18,10 +19,11 @@ type Config struct {
 // PostgresConnectionString method
 func (c *Config) PostgresConnectionString() string {
 	return fmt.Sprintf(
-		"host=%s port=%s dbname=%s user=%s password=%s sslmode=require",
+		"host=%s port=%s dbname=%s user=%s password=%s sslmode=%s",
 		c.DBHost,
 		c.DBPort,
 		c.DBName,
 		c.DBUsername,
-		c.DBPassword)
+		c.DBPassword,
+		c.DBSSLMode)
 }
