@@ -31,6 +31,11 @@ func (c *Config) PostgresConnectionString() string {
 		c.DBSSLMode)
 }
 
+// ServerAddr method
+func (c *Config) ServerAddr() string {
+	return fmt.Sprintf(":%s", c.Port)
+}
+
 // GetValue func
 func GetValue(key, fallback string) string {
 	value, ok := os.LookupEnv(key)

@@ -3,12 +3,12 @@ package app
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"products-api/app/config"
 	"products-api/app/routes/products"
 
 	"github.com/gorilla/mux"
+	"github.com/ory/graceful"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
 
@@ -70,11 +70,17 @@ func (a *App) Run() {
 		handler = cors.AllowAll().Handler(router)
 	}
 
-	addr := fmt.Sprintf(":%s", a.Config.Port)
+	addr := a.Config.ServerAddr()
+
+	server := graceful.WithDefaults(&http.Server{
+		Addr:    addr,
+		Handler: handler})
 
 	a.Logger.Info().Msgf("Application running at %s", addr)
 
-	if err := http.ListenAndServe(addr, handler); err != nil {
+	if err := graceful.Graceful(server.ListenAndServe, server.Shutdown); err != nil {
 		a.Logger.Fatal().Err(err).Send()
 	}
+
+	a.Logger.Info().Msg("Application shutdown gracefully")
 }
