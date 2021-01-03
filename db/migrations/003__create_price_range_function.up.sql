@@ -1,13 +1,13 @@
 CREATE OR REPLACE FUNCTION products.price_range(
-	OUT min_price numeric,
-	OUT max_price numeric)
+    OUT min_price numeric,
+    OUT max_price numeric)
     RETURNS record
     LANGUAGE 'plpgsql'
 AS $BODY$
 BEGIN
-	select min(price), max(price)
-	into min_price, max_price
-	from products.products;
+    select min(price), max(price)
+    into min_price, max_price
+    from products.products;
 END;
 $BODY$;
 
