@@ -3,12 +3,15 @@ FROM golang:1.15.6-alpine3.12 AS build-env
 
 WORKDIR /app
 
-COPY ./src/ ./
+COPY ./ ./
 
 RUN go build -ldflags="-s -w" -o products-api
 
 # runtime stage
 FROM alpine:3.12
+
 WORKDIR /app
+
 COPY --from=build-env /app/products-api .
+
 ENTRYPOINT ["./products-api"]

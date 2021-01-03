@@ -17,7 +17,7 @@ services:
     env_file:
       - ../golang-api-secrets/pgadmin.env
     ports:
-      - 8030:80
+      - 8000:80
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     networks:
@@ -26,7 +26,7 @@ services:
   swaggereditor:
     image: swaggerapi/swagger-editor
     ports:
-      - 8040:8080
+      - 8001:8080
     networks:
       - golang-api-net
 
@@ -36,7 +36,7 @@ services:
     env_file:
       - ../golang-api-secrets/api.env
     ports:
-      - 8010:8010
+      - 8002:8080
     networks:
       - golang-api-net
 
