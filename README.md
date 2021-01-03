@@ -8,4 +8,4 @@
 ## Database
 
 - PostgreSQL
-- Flyway (database migrations)
+- Flyway / golang-migrate (database migrations)

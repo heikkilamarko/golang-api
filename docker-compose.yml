@@ -12,24 +12,6 @@ services:
     networks:
       - golang-api-net
 
-  api:
-    build: ./api/
-    image: golang-api
-    env_file:
-      - ../golang-api-secrets/api.env
-    ports:
-      - 8010:8010
-    networks:
-      - golang-api-net
-
-  ui:
-    build: ./ui/
-    image: golang-api-ui
-    ports:
-      - 8020:80
-    networks:
-      - golang-api-net
-
   pgadmin:
     image: dpage/pgadmin4
     env_file:
@@ -45,6 +27,16 @@ services:
     image: swaggerapi/swagger-editor
     ports:
       - 8040:8080
+    networks:
+      - golang-api-net
+
+  api:
+    build: ./api/
+    image: golang-api
+    env_file:
+      - ../golang-api-secrets/api.env
+    ports:
+      - 8010:8010
     networks:
       - golang-api-net
 
