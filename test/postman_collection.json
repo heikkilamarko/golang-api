@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a7de2417-76dd-47ba-9f7b-a4f62d5bee44",
+		"_postman_id": "170c4ffa-991d-4e6a-acbe-249c0984def9",
 		"name": "Products API",
 		"description": "Products API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -12,7 +12,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "ee849189-7a31-411e-a5d7-4f5dc6769d2f",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
@@ -109,7 +108,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "59abc5f7-247a-4019-a732-de71aa966d01",
 						"exec": [
 							"pm.test(\"Status code is 201\", function () {",
 							"    pm.response.to.have.status(201);",
@@ -193,7 +191,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6fb925fa-2127-44b7-a1b4-135af1da3fd0",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
@@ -267,7 +264,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "92c25b9f-d89f-4597-a702-5952afcb2157",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
@@ -350,7 +346,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "78a47f45-2573-4c8f-9837-cd977f815518",
 						"exec": [
 							"pm.test(\"Status code is 204\", function () {",
 							"    pm.response.to.have.status(204);",
@@ -384,7 +379,70 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get price range",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var schema = {",
+							"  type: \"object\",",
+							"  required: [\"data\"],",
+							"  properties: {",
+							"    data: {",
+							"      type: \"object\",",
+							"      required: [\"min_price\", \"max_price\"],",
+							"      properties: {        ",
+							"        min_price: {",
+							"          type: \"number\",",
+							"        },",
+							"        max_price: {",
+							"          type: \"number\",",
+							"        },",
+							"      },",
+							"    },",
+							"  },",
+							"};",
+							"",
+							"",
+							"var body = pm.response.json();",
+							"",
+							"pm.test('Response schema is valid', function() {",
+							"  pm.expect(tv4.validate(body, schema)).to.be.true;",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api_base_url}}/products/pricerange",
+					"host": [
+						"{{api_base_url}}"
+					],
+					"path": [
+						"products",
+						"pricerange"
+					]
+				}
+			},
+			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
