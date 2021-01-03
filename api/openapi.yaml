@@ -8,6 +8,7 @@ info:
     - Create new product
     - Update existing product
     - Delete product
+    - Get product price range
   version: v1
   contact:
     name: Contact
@@ -57,7 +58,7 @@ paths:
           $ref: "#/components/responses/Error"
         "500":
           $ref: "#/components/responses/Error"
-  "/products/{id}":
+  /products/{id}:
     get:
       summary: Get product by id
       description: Gets a product
@@ -111,6 +112,19 @@ paths:
         "401":
           $ref: "#/components/responses/Error"
         "404":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+  /products/pricerange:
+    get:
+      summary: Get product price range
+      description: Get product price range
+      tags:
+        - /products queries
+      responses:
+        "200":
+          $ref: "#/components/responses/PriceRange"
+        "401":
           $ref: "#/components/responses/Error"
         "500":
           $ref: "#/components/responses/Error"
@@ -186,6 +200,16 @@ components:
             properties:
               data:
                 $ref: "#/components/schemas/Product"
+    PriceRange:
+      description: Price range
+      content:
+        application/json:
+          schema:
+            type: object
+            description: Data
+            properties:
+              data:
+                $ref: "#/components/schemas/PriceRange"
     Error:
       description: Error response
       content:
@@ -244,6 +268,21 @@ components:
           type: string
           description: Free text comment
           example: The most reliable car ever.
+    PriceRange:
+      type: object
+      description: Price range response
+      required:
+        - min_price
+        - max_price
+      properties:
+        min_price:
+          type: number
+          description: Min price
+          example: 10000
+        max_price:
+          type: number
+          description: Max price
+          example: 10000
     Error:
       type: object
       description: Error response
