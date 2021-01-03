@@ -19,6 +19,29 @@ type Config struct {
 	CORSEnabled bool
 }
 
+// New func
+func New() *Config {
+	return &Config{}
+}
+
+// Load method
+func (c *Config) Load() {
+	c.Port = getEnv("APP_PORT", "8080")
+	c.DBHost = getEnv("APP_DB_HOST", "")
+	c.DBName = getEnv("APP_DB_NAME", "")
+	c.DBPort = getEnv("APP_DB_PORT", "5432")
+	c.DBUsername = getEnv("APP_DB_USERNAME", "")
+	c.DBPassword = getEnv("APP_DB_PASSWORD", "")
+	c.DBSSLMode = getEnv("APP_DB_SSLMODE", "require")
+	c.APIKey = getEnv("APP_API_KEY", "")
+	c.CORSEnabled = getEnv("APP_CORS_ENABLED", "") == "true"
+}
+
+// ServerAddr method
+func (c *Config) ServerAddr() string {
+	return fmt.Sprintf(":%s", c.Port)
+}
+
 // PostgresConnectionString method
 func (c *Config) PostgresConnectionString() string {
 	return fmt.Sprintf(
@@ -31,13 +54,7 @@ func (c *Config) PostgresConnectionString() string {
 		c.DBSSLMode)
 }
 
-// ServerAddr method
-func (c *Config) ServerAddr() string {
-	return fmt.Sprintf(":%s", c.Port)
-}
-
-// GetValue func
-func GetValue(key, fallback string) string {
+func getEnv(key, fallback string) string {
 	value, ok := os.LookupEnv(key)
 	if !ok {
 		return fallback
