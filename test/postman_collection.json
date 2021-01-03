@@ -77,13 +77,7 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "X-Api-Key",
-						"value": "{{api_key}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "{{api_base_url}}/products?limit=3",
 					"host": [
@@ -157,13 +151,7 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "X-Api-Key",
-						"value": "{{api_key}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"name\": \"__test__\",\n    \"description\": \"__test__\",\n    \"price\": 123.45,\n    \"comment\": \"__test__\"\n}",
@@ -238,13 +226,7 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "X-Api-Key",
-						"value": "{{api_key}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "{{api_base_url}}/products/{{created_id}}",
 					"host": [
@@ -311,13 +293,7 @@
 			],
 			"request": {
 				"method": "PUT",
-				"header": [
-					{
-						"key": "X-Api-Key",
-						"value": "{{api_key}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"id\": {{created_id}},\n    \"name\": \"__test_update__\",\n    \"description\": \"__test_update__\",\n    \"price\": 678.90,\n    \"comment\": \"__test_update__\"\n}",
@@ -360,13 +336,7 @@
 			],
 			"request": {
 				"method": "DELETE",
-				"header": [
-					{
-						"key": "X-Api-Key",
-						"value": "{{api_key}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "{{api_base_url}}/products/{{created_id}}",
 					"host": [
@@ -424,13 +394,7 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "X-Api-Key",
-						"value": "{{api_key}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "{{api_base_url}}/products/pricerange",
 					"host": [
@@ -443,6 +407,41 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{api_key}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-Api-Key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
