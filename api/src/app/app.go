@@ -62,6 +62,9 @@ func (a *App) Run() {
 	router.HandleFunc("/products/{id:[0-9]+}", pc.DeleteProduct).
 		Methods("DELETE")
 
+	router.HandleFunc("/products/pricerange", pc.GetPriceRange).
+		Methods("GET")
+
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
 	var handler http.Handler = router

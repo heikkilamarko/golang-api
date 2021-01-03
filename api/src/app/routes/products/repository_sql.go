@@ -161,3 +161,22 @@ func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProduc
 
 	return nil
 }
+
+// GetPriceRange method
+func (r *SQLRepository) GetPriceRange(ctx context.Context) (*PriceRange, error) {
+	pr := &PriceRange{}
+
+	err := r.db.QueryRowContext(
+		ctx,
+		`
+		SELECT min_price, max_price
+		FROM products.price_range()
+		`).Scan(&pr.MinPrice, &pr.MaxPrice)
+
+	if err != nil {
+		r.logger.Err(err).Send()
+		return nil, goutils.ErrInternalError
+	}
+
+	return pr, nil
+}

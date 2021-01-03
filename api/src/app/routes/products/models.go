@@ -11,6 +11,12 @@ type Product struct {
 	Comment     *string `json:"comment,omitempty"`
 }
 
+// PriceRange struct
+type PriceRange struct {
+	MinPrice float64 `json:"min_price"`
+	MaxPrice float64 `json:"max_price"`
+}
+
 // GetProductsQuery struct
 type GetProductsQuery struct {
 	Offset int `json:"offset"`
@@ -44,4 +50,5 @@ type Repository interface {
 	CreateProduct(context.Context, *CreateProductCommand) error
 	UpdateProduct(context.Context, *UpdateProductCommand) error
 	DeleteProduct(context.Context, *DeleteProductCommand) error
+	GetPriceRange(context.Context) (*PriceRange, error)
 }
