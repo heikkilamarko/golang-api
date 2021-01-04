@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION products.price_range(
+CREATE OR REPLACE FUNCTION products.price_range_func(
     OUT min_price numeric,
     OUT max_price numeric)
     RETURNS record
@@ -11,8 +11,5 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION products.price_range()
-    OWNER TO postgres;
-
-COMMENT ON FUNCTION products.price_range()
+COMMENT ON FUNCTION products.price_range_func()
     IS 'Gets product price range as min and max values.';

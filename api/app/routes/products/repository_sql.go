@@ -169,8 +169,7 @@ func (r *SQLRepository) GetPriceRange(ctx context.Context) (*PriceRange, error) 
 	err := r.db.QueryRowContext(
 		ctx,
 		`
-		SELECT min_price, max_price
-		FROM products.price_range()
+		CALL products.price_range_proc(0,0)
 		`).Scan(&pr.MinPrice, &pr.MaxPrice)
 
 	if err != nil {
