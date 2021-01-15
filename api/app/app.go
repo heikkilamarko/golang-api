@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"products-api/app/config"
 	"products-api/app/routes/products"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/ory/graceful"
@@ -30,10 +31,14 @@ func New(c *config.Config, l *zerolog.Logger) *App {
 // Run method
 func (a *App) Run() {
 	db, err := sql.Open("postgres", a.Config.PostgresConnectionString())
-
 	if err != nil {
 		a.Logger.Fatal().Err(err).Send()
 	}
+
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(25)
+	db.SetConnMaxLifetime(10 * time.Minute)
+	db.SetConnMaxIdleTime(5 * time.Minute)
 
 	pr := products.NewSQLRepository(db, a.Logger)
 	pc := products.NewController(pr)
