@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"net/http"
 	"products-api/app/config"
+	"products-api/app/middleware"
 	"products-api/app/routes/products"
 	"time"
 
@@ -46,10 +47,11 @@ func (a *App) Run() {
 	router := mux.NewRouter()
 
 	router.Use(
-		a.loggerMiddleware,
-		a.recoveryMiddleware,
-		a.authMiddleware,
-		a.timeoutMiddleware,
+		middleware.Logger(a.Logger),
+		middleware.RequestLogger(),
+		middleware.ErrorRecovery(),
+		middleware.APIKey(a.Config.APIKey),
+		middleware.Timeout(a.Config.RequestTimeout),
 	)
 
 	router.HandleFunc("/products", pc.GetProducts).
@@ -70,7 +72,7 @@ func (a *App) Run() {
 	router.HandleFunc("/products/pricerange", pc.GetPriceRange).
 		Methods("GET")
 
-	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
+	router.NotFoundHandler = http.HandlerFunc(middleware.NotFoundHandler)
 
 	var handler http.Handler = router
 

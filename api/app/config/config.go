@@ -4,19 +4,21 @@ package config
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 // Config struct
 type Config struct {
-	Port        string
-	DBHost      string
-	DBPort      string
-	DBName      string
-	DBUsername  string
-	DBPassword  string
-	DBSSLMode   string
-	APIKey      string
-	CORSEnabled bool
+	Port           string
+	DBHost         string
+	DBPort         string
+	DBName         string
+	DBUsername     string
+	DBPassword     string
+	DBSSLMode      string
+	APIKey         string
+	CORSEnabled    bool
+	RequestTimeout time.Duration
 }
 
 // New func
@@ -35,6 +37,11 @@ func (c *Config) Load() {
 	c.DBSSLMode = getEnv("APP_DB_SSLMODE", "require")
 	c.APIKey = getEnv("APP_API_KEY", "")
 	c.CORSEnabled = getEnv("APP_CORS_ENABLED", "") == "true"
+
+	var err error
+	if c.RequestTimeout, err = time.ParseDuration(getEnv("APP_REQUEST_TIMEOUT", "10s")); err != nil {
+		c.RequestTimeout = 10 * time.Second
+	}
 }
 
 // ServerAddr method

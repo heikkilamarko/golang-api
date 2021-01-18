@@ -12,7 +12,10 @@ func main() {
 	c := config.New()
 	c.Load()
 
-	l := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	l := zerolog.New(os.Stderr).
+		With().
+		Timestamp().
+		Logger()
 
 	a := app.New(c, &l)
 	a.Run()
