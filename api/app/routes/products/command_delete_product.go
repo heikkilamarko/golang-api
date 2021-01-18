@@ -3,7 +3,6 @@ package products
 import (
 	"net/http"
 	"products-api/app/constants"
-	"products-api/app/utils"
 
 	"github.com/heikkilamarko/goutils"
 )
@@ -13,7 +12,7 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	command, err := parseDeleteProductRequest(r)
 
 	if err != nil {
-		utils.HandleParseRequestError(err, w)
+		goutils.WriteValidationError(w, err)
 		return
 	}
 

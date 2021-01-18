@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"products-api/app/constants"
-	"products-api/app/utils"
 
 	"github.com/heikkilamarko/goutils"
 )
@@ -14,7 +13,7 @@ func (c *Controller) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	command, err := parseCreateProductRequest(r)
 
 	if err != nil {
-		utils.HandleParseRequestError(err, w)
+		goutils.WriteValidationError(w, err)
 		return
 	}
 
