@@ -7,6 +7,67 @@
 	},
 	"item": [
 		{
+			"name": "Unauthorized access",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"var schema = {",
+							"  type: \"object\",",
+							"  required: [\"error\"],",
+							"  properties: {",
+							"    error: {",
+							"      type: \"object\",",
+							"      required: [\"code\"],",
+							"      properties: {",
+							"        code: {",
+							"          type: \"string\",",
+							"        },",
+							"      },",
+							"    },",
+							"  },",
+							"};",
+							"",
+							"var body = pm.response.json();",
+							"",
+							"pm.test('Response schema is valid', function() {",
+							"  pm.expect(tv4.validate(body, schema)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_base_url}}/products?limit=3",
+					"host": [
+						"{{api_base_url}}"
+					],
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get top 3 products",
 			"event": [
 				{
@@ -63,7 +124,6 @@
 							"    },",
 							"  },",
 							"};",
-							"",
 							"",
 							"var body = pm.response.json();",
 							"",
@@ -134,7 +194,6 @@
 							"    },",
 							"  },",
 							"};",
-							"",
 							"",
 							"var body = pm.response.json();",
 							"",
@@ -212,7 +271,6 @@
 							"  },",
 							"};",
 							"",
-							"",
 							"var body = pm.response.json();",
 							"",
 							"pm.test('Response schema is valid', function() {",
@@ -278,7 +336,6 @@
 							"    },",
 							"  },",
 							"};",
-							"",
 							"",
 							"var body = pm.response.json();",
 							"",
@@ -379,7 +436,6 @@
 							"    },",
 							"  },",
 							"};",
-							"",
 							"",
 							"var body = pm.response.json();",
 							"",
