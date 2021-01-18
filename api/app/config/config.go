@@ -17,6 +17,7 @@ type Config struct {
 	DBPassword     string
 	DBSSLMode      string
 	APIKey         string
+	APIKeyHeader   string
 	CORSEnabled    bool
 	RequestTimeout time.Duration
 }
@@ -36,6 +37,7 @@ func (c *Config) Load() {
 	c.DBPassword = getEnv("APP_DB_PASSWORD", "")
 	c.DBSSLMode = getEnv("APP_DB_SSLMODE", "require")
 	c.APIKey = getEnv("APP_API_KEY", "")
+	c.APIKeyHeader = getEnv("APP_API_KEY_HEADER", "X-Api-Key")
 	c.CORSEnabled = getEnv("APP_CORS_ENABLED", "") == "true"
 
 	var err error

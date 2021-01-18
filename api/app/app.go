@@ -5,11 +5,11 @@ import (
 	"database/sql"
 	"net/http"
 	"products-api/app/config"
-	"products-api/app/middleware"
 	"products-api/app/routes/products"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/heikkilamarko/goutils/middleware"
 	"github.com/ory/graceful"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
@@ -50,7 +50,7 @@ func (a *App) Run() {
 		middleware.Logger(a.Logger),
 		middleware.RequestLogger(),
 		middleware.ErrorRecovery(),
-		middleware.APIKey(a.Config.APIKey),
+		middleware.APIKey(a.Config.APIKey, a.Config.APIKeyHeader),
 		middleware.Timeout(a.Config.RequestTimeout),
 	)
 
