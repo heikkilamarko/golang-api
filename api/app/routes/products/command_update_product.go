@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"products-api/app/constants"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/heikkilamarko/goutils"
 )
 
@@ -33,7 +35,7 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 func parseUpdateProductRequest(r *http.Request) (*UpdateProductCommand, error) {
 	validationErrors := map[string]string{}
 
-	id, err := goutils.GetRequestVarInt(r, constants.FieldID)
+	id, err := strconv.Atoi(mux.Vars(r)[constants.FieldID])
 	if err != nil {
 		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
 	}

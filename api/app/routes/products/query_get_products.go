@@ -3,6 +3,7 @@ package products
 import (
 	"net/http"
 	"products-api/app/constants"
+	"strconv"
 
 	"github.com/heikkilamarko/goutils"
 )
@@ -34,15 +35,15 @@ func parseGetProductsRequest(r *http.Request) (*GetProductsQuery, error) {
 
 	var err error = nil
 
-	if value := goutils.GetRequestFormValueString(r, constants.FieldPaginationOffset); value != "" {
-		offset, err = goutils.ParseInt(value)
+	if value := r.FormValue(constants.FieldPaginationOffset); value != "" {
+		offset, err = strconv.Atoi(value)
 		if err != nil || offset < 0 {
 			validationErrors[constants.FieldPaginationOffset] = constants.ErrCodeInvalidOffset
 		}
 	}
 
-	if value := goutils.GetRequestFormValueString(r, constants.FieldPaginationLimit); value != "" {
-		limit, err = goutils.ParseInt(value)
+	if value := r.FormValue(constants.FieldPaginationLimit); value != "" {
+		limit, err = strconv.Atoi(value)
 		if err != nil || limit < 1 || constants.PaginationLimitMax < limit {
 			validationErrors[constants.FieldPaginationLimit] = constants.ErrCodeInvalidLimit
 		}
