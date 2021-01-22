@@ -2,20 +2,15 @@
 package app
 
 import (
-	"database/sql"
 	"net/http"
 	"products-api/app/config"
-	"products-api/app/routes/products"
-	"time"
+	"products-api/app/routes"
 
 	"github.com/gorilla/mux"
 	"github.com/heikkilamarko/goutils/middleware"
 	"github.com/ory/graceful"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
-
-	// PostgreSQL driver
-	_ "github.com/lib/pq"
 )
 
 // App struct
@@ -31,19 +26,6 @@ func New(c *config.Config, l *zerolog.Logger) *App {
 
 // Run method
 func (a *App) Run() {
-	db, err := sql.Open("postgres", a.Config.PostgresConnectionString())
-	if err != nil {
-		a.Logger.Fatal().Err(err).Send()
-	}
-
-	db.SetMaxOpenConns(25)
-	db.SetMaxIdleConns(25)
-	db.SetConnMaxLifetime(10 * time.Minute)
-	db.SetConnMaxIdleTime(5 * time.Minute)
-
-	pr := products.NewSQLRepository(db, a.Logger)
-	pc := products.NewController(pr)
-
 	router := mux.NewRouter()
 
 	router.Use(
@@ -54,12 +36,9 @@ func (a *App) Run() {
 		middleware.Timeout(a.Config.RequestTimeout),
 	)
 
-	router.HandleFunc("/products", pc.GetProducts).Methods("GET")
-	router.HandleFunc("/products", pc.CreateProduct).Methods("POST")
-	router.HandleFunc("/products/{id:[0-9]+}", pc.GetProduct).Methods("GET")
-	router.HandleFunc("/products/{id:[0-9]+}", pc.UpdateProduct).Methods("PUT")
-	router.HandleFunc("/products/{id:[0-9]+}", pc.DeleteProduct).Methods("DELETE")
-	router.HandleFunc("/products/pricerange", pc.GetPriceRange).Methods("GET")
+	if err := routes.RegisterRoutes(router, a.Config, a.Logger); err != nil {
+		a.Logger.Fatal().Err(err).Send()
+	}
 
 	router.NotFoundHandler = http.HandlerFunc(middleware.NotFoundHandler)
 
