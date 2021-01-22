@@ -27,6 +27,10 @@ func RegisterRoutes(router *mux.Router, config *config.Config, logger *zerolog.L
 	db.SetConnMaxLifetime(10 * time.Minute)
 	db.SetConnMaxIdleTime(5 * time.Minute)
 
+	if err := db.Ping(); err != nil {
+		return err
+	}
+
 	pc := products.NewController(
 		products.NewSQLRepository(db, logger),
 	)
