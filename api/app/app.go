@@ -48,13 +48,11 @@ func (a *App) Run() {
 		handler = cors.AllowAll().Handler(router)
 	}
 
-	addr := a.Config.ServerAddr()
-
 	server := graceful.WithDefaults(&http.Server{
-		Addr:    addr,
+		Addr:    a.Config.Address,
 		Handler: handler})
 
-	a.Logger.Info().Msgf("Application running at %s", addr)
+	a.Logger.Info().Msgf("Application running at %s", a.Config.Address)
 
 	if err := graceful.Graceful(server.ListenAndServe, server.Shutdown); err != nil {
 		a.Logger.Fatal().Err(err).Send()

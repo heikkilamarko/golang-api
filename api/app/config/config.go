@@ -2,7 +2,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -11,10 +10,10 @@ import (
 
 // Config struct
 type Config struct {
-	Port               string
-	DBConnectionString string
+	Address            string
 	APIKey             string
 	APIKeyHeader       string
+	DBConnectionString string
 	CORSEnabled        bool
 	LogLevel           zerolog.Level
 	RequestTimeout     time.Duration
@@ -27,10 +26,10 @@ func New() *Config {
 
 // Load method
 func (c *Config) Load() {
-	c.Port = getEnv("APP_PORT", "8080")
-	c.DBConnectionString = getEnv("APP_DB_CONNECTION_STRING", "")
+	c.Address = getEnv("APP_ADDRESS", ":8080")
 	c.APIKey = getEnv("APP_API_KEY", "")
 	c.APIKeyHeader = getEnv("APP_API_KEY_HEADER", "X-Api-Key")
+	c.DBConnectionString = getEnv("APP_DB_CONNECTION_STRING", "")
 	c.CORSEnabled = getEnv("APP_CORS_ENABLED", "") == "true"
 
 	var err error
@@ -42,11 +41,6 @@ func (c *Config) Load() {
 	if c.RequestTimeout, err = time.ParseDuration(getEnv("APP_REQUEST_TIMEOUT", "10s")); err != nil {
 		c.RequestTimeout = 10 * time.Second
 	}
-}
-
-// ServerAddr method
-func (c *Config) ServerAddr() string {
-	return fmt.Sprintf(":%s", c.Port)
 }
 
 func getEnv(key, fallback string) string {
