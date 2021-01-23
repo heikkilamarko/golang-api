@@ -12,6 +12,8 @@ func main() {
 	c := config.New()
 	c.Load()
 
+	zerolog.SetGlobalLevel(c.LogLevel)
+
 	l := zerolog.New(os.Stderr).
 		With().
 		Timestamp().

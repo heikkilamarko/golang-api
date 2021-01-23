@@ -17,7 +17,7 @@ import (
 
 // RegisterRoutes func
 func RegisterRoutes(router *mux.Router, config *config.Config, logger *zerolog.Logger) error {
-	db, err := sql.Open("postgres", config.PostgresConnectionString())
+	db, err := sql.Open("postgres", config.DBConnectionString)
 	if err != nil {
 		return err
 	}
