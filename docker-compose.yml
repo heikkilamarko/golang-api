@@ -33,6 +33,7 @@ services:
   api:
     build: ./api/
     image: golang-api
+    restart: on-failure
     env_file:
       - ../golang-api-secrets/api.env
     ports:
