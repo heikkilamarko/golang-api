@@ -1,5 +1,5 @@
 # build stage
-FROM golang:1.16-rc-alpine3.13 AS build-env
+FROM golang:1.16rc1-alpine3.13 AS build-env
 
 WORKDIR /app
 

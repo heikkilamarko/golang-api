@@ -19,6 +19,8 @@ func main() {
 		Timestamp().
 		Logger()
 
+	l.Info().Str("config", c.String()).Send()
+
 	a := app.New(c, &l)
 	a.Run()
 }

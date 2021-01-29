@@ -2,6 +2,8 @@
 package config
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
 	"time"
 
@@ -10,18 +12,29 @@ import (
 
 // Config struct
 type Config struct {
-	Address            string
-	APIKey             string
-	APIKeyHeader       string
-	DBConnectionString string
-	CORSEnabled        bool
-	LogLevel           zerolog.Level
-	RequestTimeout     time.Duration
+	Address            string        `json:"address"`
+	APIKey             string        `json:"apikey"`
+	APIKeyHeader       string        `json:"apikeyheader"`
+	DBConnectionString string        `json:"dbconnectionstring"`
+	CORSEnabled        bool          `json:"corsenabled"`
+	LogLevel           zerolog.Level `json:"loglevel"`
+	RequestTimeout     time.Duration `json:"requesttimeout"`
 }
 
 // New func
 func New() *Config {
 	return &Config{}
+}
+
+// String method
+func (c *Config) String() string {
+	cc := *c
+	cc.APIKey = "***"
+	cc.DBConnectionString = "***"
+	if b, err := json.Marshal(cc); err == nil {
+		return fmt.Sprintf("%s", string(b))
+	}
+	return ""
 }
 
 // Load method
