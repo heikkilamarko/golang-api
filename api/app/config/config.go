@@ -13,12 +13,12 @@ import (
 // Config struct
 type Config struct {
 	Address            string        `json:"address"`
-	APIKey             string        `json:"apikey"`
-	APIKeyHeader       string        `json:"apikeyheader"`
-	DBConnectionString string        `json:"dbconnectionstring"`
-	CORSEnabled        bool          `json:"corsenabled"`
-	LogLevel           zerolog.Level `json:"loglevel"`
-	RequestTimeout     time.Duration `json:"requesttimeout"`
+	APIKey             string        `json:"api_key"`
+	APIKeyHeader       string        `json:"api_key_header"`
+	DBConnectionString string        `json:"db_connection_string"`
+	CORSEnabled        bool          `json:"cors_enabled"`
+	LogLevel           zerolog.Level `json:"log_level"`
+	RequestTimeout     time.Duration `json:"request_timeout"`
 }
 
 // New func
