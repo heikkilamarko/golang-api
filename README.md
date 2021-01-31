@@ -9,3 +9,9 @@
 
 - PostgreSQL
 - Flyway / golang-migrate (database migrations)
+
+## Logging Stack
+
+- Grafana Loki
+- Grafana Promtail
+- Grafana

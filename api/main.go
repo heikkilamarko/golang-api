@@ -17,6 +17,7 @@ func main() {
 	l := zerolog.New(os.Stderr).
 		With().
 		Timestamp().
+		Str("app", c.App).
 		Logger()
 
 	l.Info().Str("config", c.String()).Send()

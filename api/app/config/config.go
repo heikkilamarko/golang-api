@@ -12,6 +12,7 @@ import (
 
 // Config struct
 type Config struct {
+	App                string        `json:"app"`
 	Address            string        `json:"address"`
 	APIKey             string        `json:"api_key"`
 	APIKeyHeader       string        `json:"api_key_header"`
@@ -39,6 +40,7 @@ func (c *Config) String() string {
 
 // Load method
 func (c *Config) Load() {
+	c.App = getEnv("APP_NAME", "")
 	c.Address = getEnv("APP_ADDRESS", ":8080")
 	c.APIKey = getEnv("APP_API_KEY", "")
 	c.APIKeyHeader = getEnv("APP_API_KEY_HEADER", "X-Api-Key")
