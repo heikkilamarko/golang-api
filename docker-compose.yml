@@ -41,11 +41,25 @@ services:
     networks:
       - golang-api-net
 
+  minio:
+    image: minio/minio
+    command: server /data
+    env_file:
+      - ../golang-api-secrets/minio.env
+    ports:
+      - 9000:9000
+    volumes:
+      - minio-data:/data
+    networks:
+      - golang-api-net
+
   loki:
     image: grafana/loki
     ports:
       - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-config.yml:/etc/loki/config.yml
+    command: -config.file=/etc/loki/config.yml
     networks:
       - golang-api-net
 
@@ -71,3 +85,4 @@ networks:
 volumes:
   db-data:
   pgadmin-data:
+  minio-data:
