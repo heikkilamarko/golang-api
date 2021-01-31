@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
   db:
@@ -40,6 +40,8 @@ services:
       - 8002:8080
     networks:
       - golang-api-net
+    depends_on:
+      - db
 
   minio:
     image: minio/minio
@@ -62,6 +64,8 @@ services:
     command: -config.file=/etc/loki/config.yml
     networks:
       - golang-api-net
+    depends_on:
+      - minio
 
   promtail:
     image: grafana/promtail
@@ -71,6 +75,8 @@ services:
     command: -config.file=/etc/promtail/config.yml
     networks:
       - golang-api-net
+    depends_on:
+      - loki
 
   grafana:
     image: grafana/grafana
