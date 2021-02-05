@@ -10,8 +10,6 @@ RUN go build -ldflags="-s -w" -o products-api
 # runtime stage
 FROM alpine:3.13
 
-WORKDIR /app
+COPY --from=build-env /app/products-api /usr/bin
 
-COPY --from=build-env /app/products-api .
-
-ENTRYPOINT ["./products-api"]
+ENTRYPOINT ["/usr/bin/products-api"]
