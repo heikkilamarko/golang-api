@@ -70,6 +70,7 @@ services:
   promtail:
     image: grafana/promtail
     volumes:
+      - promtail-data:/tmp/promtail
       - /var/lib/docker/containers:/var/lib/docker/containers
       - ./promtail-config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
@@ -95,3 +96,4 @@ volumes:
   pgadmin-data:
   minio-data:
   grafana-data:
+  promtail-data:
