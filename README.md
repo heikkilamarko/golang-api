@@ -4,6 +4,7 @@
 
 - Golang
 - OpenAPI 3.0
+- Kong Gateway
 
 ## Database
 
