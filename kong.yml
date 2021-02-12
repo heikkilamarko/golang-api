@@ -11,8 +11,32 @@ services:
         paths:
           - /
 
+consumers:
+  - username: products
+    custom_id: products
+
 plugins:
   - name: rate-limiting
+    enabled: true
+    service: products
     config:
       minute: 10
       policy: local
+  - name: key-auth
+    enabled: true
+    service: products
+    config:
+      key_names:
+        - x-api-key
+  - name: cors
+    enabled: true
+    service: products
+    config:
+      origins:
+        - "*"
+      credentials: true
+      max_age: 3600
+
+keyauth_credentials:
+  - consumer: products
+    key: API_KEY
