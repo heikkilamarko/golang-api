@@ -1,0 +1,18 @@
+_format_version: "2.1"
+_transform: true
+
+services:
+  - name: products
+    url: http://api:8080
+    tags:
+      - products
+    routes:
+      - name: products
+        paths:
+          - /
+
+plugins:
+  - name: rate-limiting
+    config:
+      minute: 10
+      policy: local

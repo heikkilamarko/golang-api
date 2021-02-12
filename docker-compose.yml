@@ -12,24 +12,6 @@ services:
     networks:
       - golang-api-net
 
-  pgadmin:
-    image: dpage/pgadmin4
-    env_file:
-      - ../golang-api-secrets/pgadmin.env
-    ports:
-      - 8000:80
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    networks:
-      - golang-api-net
-
-  swaggereditor:
-    image: swaggerapi/swagger-editor
-    ports:
-      - 8001:8080
-    networks:
-      - golang-api-net
-
   api:
     build: ./api/
     image: golang-api
@@ -37,7 +19,7 @@ services:
     env_file:
       - ../golang-api-secrets/api.env
     ports:
-      - 8002:8080
+      - 8080:8080
     networks:
       - golang-api-net
     depends_on:
@@ -60,7 +42,7 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - ./loki-config.yml:/etc/loki/config.yml
+      - ./loki.yml:/etc/loki/config.yml
     command: -config.file=/etc/loki/config.yml
     networks:
       - golang-api-net
@@ -72,7 +54,7 @@ services:
     volumes:
       - promtail-data:/tmp/promtail
       - /var/lib/docker/containers:/var/lib/docker/containers
-      - ./promtail-config.yml:/etc/promtail/config.yml
+      - ./promtail.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
     networks:
       - golang-api-net
@@ -85,6 +67,44 @@ services:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
+    networks:
+      - golang-api-net
+
+  kong:
+    image: kong
+    volumes:
+      - ./kong.yml:/etc/kong/config.yml
+    ports:
+      - 8000:8000
+      - 8443:8443
+      - 8001:8001
+      - 8444:8444
+    environment:
+      - KONG_DATABASE=off
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+      - KONG_DECLARATIVE_CONFIG=/etc/kong/config.yml
+    networks:
+      - golang-api-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - ../golang-api-secrets/pgadmin.env
+    ports:
+      - 8011:80
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - golang-api-net
+
+  swaggereditor:
+    image: swaggerapi/swagger-editor
+    ports:
+      - 8012:8080
     networks:
       - golang-api-net
 
