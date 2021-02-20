@@ -1,503 +1,461 @@
 {
-	"info": {
-		"_postman_id": "170c4ffa-991d-4e6a-acbe-249c0984def9",
-		"name": "Products API",
-		"description": "Products API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Unauthorized access",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 401\", function () {",
-							"    pm.response.to.have.status(401);",
-							"});",
-							"",
-							"var schema = {",
-							"  type: \"object\",",
-							"  required: [\"error\"],",
-							"  properties: {",
-							"    error: {",
-							"      type: \"object\",",
-							"      required: [\"code\"],",
-							"      properties: {",
-							"        code: {",
-							"          type: \"string\",",
-							"        },",
-							"      },",
-							"    },",
-							"  },",
-							"};",
-							"",
-							"var body = pm.response.json();",
-							"",
-							"pm.test('Response schema is valid', function() {",
-							"  pm.expect(tv4.validate(body, schema)).to.be.true;",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{api_base_url}}/products?limit=3",
-					"host": [
-						"{{api_base_url}}"
-					],
-					"path": [
-						"products"
-					],
-					"query": [
-						{
-							"key": "limit",
-							"value": "3"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get top 3 products",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"var schema = {",
-							"  type: \"object\",",
-							"  required: [\"meta\", \"data\"],",
-							"  properties: {",
-							"    meta: {",
-							"      type: \"object\",",
-							"      required: [\"offset\", \"limit\"],",
-							"      properties: {",
-							"        offset: {",
-							"          type: \"integer\",",
-							"        },",
-							"        limit: {",
-							"          type: \"integer\",",
-							"        },",
-							"      },",
-							"    },",
-							"    data: {",
-							"      type: \"array\",",
-							"      items: {",
-							"        anyOf: [",
-							"          {",
-							"            type: \"object\",",
-							"            required: [\"id\", \"name\", \"price\"],",
-							"            properties: {",
-							"              id: {",
-							"                type: \"integer\",",
-							"              },",
-							"              name: {",
-							"                type: \"string\",",
-							"              },",
-							"              description: {",
-							"                type: \"string\",",
-							"              },",
-							"              price: {",
-							"                type: \"number\",",
-							"              },",
-							"              comment: {",
-							"                type: \"string\",",
-							"              },",
-							"            },",
-							"          },",
-							"        ],",
-							"      },",
-							"    },",
-							"  },",
-							"};",
-							"",
-							"var body = pm.response.json();",
-							"",
-							"pm.test('Response schema is valid', function() {",
-							"  pm.expect(tv4.validate(body, schema)).to.be.true;",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{api_base_url}}/products?limit=3",
-					"host": [
-						"{{api_base_url}}"
-					],
-					"path": [
-						"products"
-					],
-					"query": [
-						{
-							"key": "limit",
-							"value": "3"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Add new product",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 201\", function () {",
-							"    pm.response.to.have.status(201);",
-							"});",
-							"",
-							"var schema = {",
-							"  type: \"object\",",
-							"  required: [\"data\"],",
-							"  properties: {",
-							"    data: {",
-							"      type: \"object\",",
-							"      required: [\"id\", \"name\", \"description\", \"price\", \"comment\"],",
-							"      properties: {",
-							"        id: {",
-							"          type: \"integer\",",
-							"        },",
-							"        name: {",
-							"          type: \"string\",",
-							"        },",
-							"        description: {",
-							"          type: \"string\",",
-							"        },",
-							"        price: {",
-							"          type: \"number\",",
-							"        },",
-							"        comment: {",
-							"          type: \"string\",",
-							"        },",
-							"      },",
-							"    },",
-							"  },",
-							"};",
-							"",
-							"var body = pm.response.json();",
-							"",
-							"pm.test('Response schema is valid', function() {",
-							"  pm.expect(tv4.validate(body, schema)).to.be.true;",
-							"});",
-							"",
-							"pm.environment.set(\"created_id\", body.data.id);",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\": \"__test__\",\n    \"description\": \"__test__\",\n    \"price\": 123.45,\n    \"comment\": \"__test__\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api_base_url}}/products",
-					"host": [
-						"{{api_base_url}}"
-					],
-					"path": [
-						"products"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get product by id",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"var schema = {",
-							"  type: \"object\",",
-							"  required: [\"data\"],",
-							"  properties: {",
-							"    data: {",
-							"      type: \"object\",",
-							"      required: [\"id\", \"name\", \"description\", \"price\", \"comment\"],",
-							"      properties: {",
-							"        id: {",
-							"          type: \"integer\",",
-							"        },",
-							"        name: {",
-							"          type: \"string\",",
-							"        },",
-							"        description: {",
-							"          type: \"string\",",
-							"        },",
-							"        price: {",
-							"          type: \"number\",",
-							"        },",
-							"        comment: {",
-							"          type: \"string\",",
-							"        },",
-							"      },",
-							"    },",
-							"  },",
-							"};",
-							"",
-							"var body = pm.response.json();",
-							"",
-							"pm.test('Response schema is valid', function() {",
-							"  pm.expect(tv4.validate(body, schema)).to.be.true;",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{api_base_url}}/products/{{created_id}}",
-					"host": [
-						"{{api_base_url}}"
-					],
-					"path": [
-						"products",
-						"{{created_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update product name and price",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"var schema = {",
-							"  type: \"object\",",
-							"  required: [\"data\"],",
-							"  properties: {",
-							"    data: {",
-							"      type: \"object\",",
-							"      required: [\"id\", \"name\", \"description\", \"price\", \"comment\"],",
-							"      properties: {",
-							"        id: {",
-							"          type: \"integer\",",
-							"        },",
-							"        name: {",
-							"          type: \"string\",",
-							"        },",
-							"        description: {",
-							"          type: \"string\",",
-							"        },",
-							"        price: {",
-							"          type: \"number\",",
-							"        },",
-							"        comment: {",
-							"          type: \"string\",",
-							"        },",
-							"      },",
-							"    },",
-							"  },",
-							"};",
-							"",
-							"var body = pm.response.json();",
-							"",
-							"pm.test('Response schema is valid', function() {",
-							"  pm.expect(tv4.validate(body, schema)).to.be.true;",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": {{created_id}},\n    \"name\": \"__test_update__\",\n    \"description\": \"__test_update__\",\n    \"price\": 678.90,\n    \"comment\": \"__test_update__\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api_base_url}}/products/{{created_id}}",
-					"host": [
-						"{{api_base_url}}"
-					],
-					"path": [
-						"products",
-						"{{created_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete product",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 204\", function () {",
-							"    pm.response.to.have.status(204);",
-							"});",
-							"",
-							"pm.environment.unset(\"created_id\");",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{api_base_url}}/products/{{created_id}}",
-					"host": [
-						"{{api_base_url}}"
-					],
-					"path": [
-						"products",
-						"{{created_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get price range",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"var schema = {",
-							"  type: \"object\",",
-							"  required: [\"data\"],",
-							"  properties: {",
-							"    data: {",
-							"      type: \"object\",",
-							"      required: [\"min_price\", \"max_price\"],",
-							"      properties: {        ",
-							"        min_price: {",
-							"          type: \"number\",",
-							"        },",
-							"        max_price: {",
-							"          type: \"number\",",
-							"        },",
-							"      },",
-							"    },",
-							"  },",
-							"};",
-							"",
-							"var body = pm.response.json();",
-							"",
-							"pm.test('Response schema is valid', function() {",
-							"  pm.expect(tv4.validate(body, schema)).to.be.true;",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{api_base_url}}/products/pricerange",
-					"host": [
-						"{{api_base_url}}"
-					],
-					"path": [
-						"products",
-						"pricerange"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"auth": {
-		"type": "apikey",
-		"apikey": [
-			{
-				"key": "value",
-				"value": "{{api_key}}",
-				"type": "string"
-			},
-			{
-				"key": "key",
-				"value": "X-Api-Key",
-				"type": "string"
-			}
-		]
-	},
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	]
+  "info": {
+    "_postman_id": "170c4ffa-991d-4e6a-acbe-249c0984def9",
+    "name": "Products API",
+    "description": "Products API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Unauthorized access",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 401\", function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "var schema = {",
+              "  type: \"object\",",
+              "  required: [\"message\"],",
+              "  properties: {",
+              "    message: {",
+              "      type: \"string\",",
+              "    },",
+              "  },",
+              "};",
+              "",
+              "var body = pm.response.json();",
+              "",
+              "pm.test('Response schema is valid', function() {",
+              "  pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_base_url}}/products?limit=3",
+          "host": ["{{api_base_url}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "3"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get top 3 products",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var schema = {",
+              "  type: \"object\",",
+              "  required: [\"meta\", \"data\"],",
+              "  properties: {",
+              "    meta: {",
+              "      type: \"object\",",
+              "      required: [\"offset\", \"limit\"],",
+              "      properties: {",
+              "        offset: {",
+              "          type: \"integer\",",
+              "        },",
+              "        limit: {",
+              "          type: \"integer\",",
+              "        },",
+              "      },",
+              "    },",
+              "    data: {",
+              "      type: \"array\",",
+              "      items: {",
+              "        anyOf: [",
+              "          {",
+              "            type: \"object\",",
+              "            required: [\"id\", \"name\", \"price\"],",
+              "            properties: {",
+              "              id: {",
+              "                type: \"integer\",",
+              "              },",
+              "              name: {",
+              "                type: \"string\",",
+              "              },",
+              "              description: {",
+              "                type: \"string\",",
+              "              },",
+              "              price: {",
+              "                type: \"number\",",
+              "              },",
+              "              comment: {",
+              "                type: \"string\",",
+              "              },",
+              "            },",
+              "          },",
+              "        ],",
+              "      },",
+              "    },",
+              "  },",
+              "};",
+              "",
+              "var body = pm.response.json();",
+              "",
+              "pm.test('Response schema is valid', function() {",
+              "  pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_base_url}}/products?limit=3",
+          "host": ["{{api_base_url}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "3"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add new product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "var schema = {",
+              "  type: \"object\",",
+              "  required: [\"data\"],",
+              "  properties: {",
+              "    data: {",
+              "      type: \"object\",",
+              "      required: [\"id\", \"name\", \"description\", \"price\", \"comment\"],",
+              "      properties: {",
+              "        id: {",
+              "          type: \"integer\",",
+              "        },",
+              "        name: {",
+              "          type: \"string\",",
+              "        },",
+              "        description: {",
+              "          type: \"string\",",
+              "        },",
+              "        price: {",
+              "          type: \"number\",",
+              "        },",
+              "        comment: {",
+              "          type: \"string\",",
+              "        },",
+              "      },",
+              "    },",
+              "  },",
+              "};",
+              "",
+              "var body = pm.response.json();",
+              "",
+              "pm.test('Response schema is valid', function() {",
+              "  pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "});",
+              "",
+              "pm.environment.set(\"created_id\", body.data.id);",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"__test__\",\n    \"description\": \"__test__\",\n    \"price\": 123.45,\n    \"comment\": \"__test__\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{api_base_url}}/products",
+          "host": ["{{api_base_url}}"],
+          "path": ["products"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get product by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var schema = {",
+              "  type: \"object\",",
+              "  required: [\"data\"],",
+              "  properties: {",
+              "    data: {",
+              "      type: \"object\",",
+              "      required: [\"id\", \"name\", \"description\", \"price\", \"comment\"],",
+              "      properties: {",
+              "        id: {",
+              "          type: \"integer\",",
+              "        },",
+              "        name: {",
+              "          type: \"string\",",
+              "        },",
+              "        description: {",
+              "          type: \"string\",",
+              "        },",
+              "        price: {",
+              "          type: \"number\",",
+              "        },",
+              "        comment: {",
+              "          type: \"string\",",
+              "        },",
+              "      },",
+              "    },",
+              "  },",
+              "};",
+              "",
+              "var body = pm.response.json();",
+              "",
+              "pm.test('Response schema is valid', function() {",
+              "  pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_base_url}}/products/{{created_id}}",
+          "host": ["{{api_base_url}}"],
+          "path": ["products", "{{created_id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update product name and price",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var schema = {",
+              "  type: \"object\",",
+              "  required: [\"data\"],",
+              "  properties: {",
+              "    data: {",
+              "      type: \"object\",",
+              "      required: [\"id\", \"name\", \"description\", \"price\", \"comment\"],",
+              "      properties: {",
+              "        id: {",
+              "          type: \"integer\",",
+              "        },",
+              "        name: {",
+              "          type: \"string\",",
+              "        },",
+              "        description: {",
+              "          type: \"string\",",
+              "        },",
+              "        price: {",
+              "          type: \"number\",",
+              "        },",
+              "        comment: {",
+              "          type: \"string\",",
+              "        },",
+              "      },",
+              "    },",
+              "  },",
+              "};",
+              "",
+              "var body = pm.response.json();",
+              "",
+              "pm.test('Response schema is valid', function() {",
+              "  pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id\": {{created_id}},\n    \"name\": \"__test_update__\",\n    \"description\": \"__test_update__\",\n    \"price\": 678.90,\n    \"comment\": \"__test_update__\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{api_base_url}}/products/{{created_id}}",
+          "host": ["{{api_base_url}}"],
+          "path": ["products", "{{created_id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204\", function () {",
+              "    pm.response.to.have.status(204);",
+              "});",
+              "",
+              "pm.environment.unset(\"created_id\");",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{api_base_url}}/products/{{created_id}}",
+          "host": ["{{api_base_url}}"],
+          "path": ["products", "{{created_id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get price range",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var schema = {",
+              "  type: \"object\",",
+              "  required: [\"data\"],",
+              "  properties: {",
+              "    data: {",
+              "      type: \"object\",",
+              "      required: [\"min_price\", \"max_price\"],",
+              "      properties: {        ",
+              "        min_price: {",
+              "          type: \"number\",",
+              "        },",
+              "        max_price: {",
+              "          type: \"number\",",
+              "        },",
+              "      },",
+              "    },",
+              "  },",
+              "};",
+              "",
+              "var body = pm.response.json();",
+              "",
+              "pm.test('Response schema is valid', function() {",
+              "  pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_base_url}}/products/pricerange",
+          "host": ["{{api_base_url}}"],
+          "path": ["products", "pricerange"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "value",
+        "value": "{{api_key}}",
+        "type": "string"
+      },
+      {
+        "key": "key",
+        "value": "X-Api-Key",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ]
 }

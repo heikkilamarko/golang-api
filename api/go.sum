@@ -4,8 +4,8 @@ github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/form3tech-oss/jwt-go v3.2.2+incompatible/go.mod h1:pbq4aXjuKjdthFRnoDwaVPLA+WlJuPGy+QneDUgJi2k=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
-github.com/heikkilamarko/goutils v1.0.14 h1:ZnZbfZURgAWCyRvVt/diqkTP0WEegH+Yyp71oxAUG9o=
-github.com/heikkilamarko/goutils v1.0.14/go.mod h1:Vt2d0+sZkkc5Dsig25j3+J5kMU8y5/IIr0T4DoSXyY0=
+github.com/heikkilamarko/goutils v1.0.15 h1:N+vcyZrkN5coRgHfVvCRqkdqP+4qJxL+sf+3v7rgDo4=
+github.com/heikkilamarko/goutils v1.0.15/go.mod h1:4ohwUFyfRfrQEtIXCRuYPD8xNw5ZARnfWViAgzKpnEM=
 github.com/lib/pq v1.9.0 h1:L8nSXQQzAYByakOFMTwpjRoHsMJklur4Gi59b6VivR8=
 github.com/lib/pq v1.9.0/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
 github.com/ory/graceful v0.1.1 h1:zx+8tDObLPrG+7Tc8jKYlXsqWnLtOQA1IZ/FAAKHMXU=

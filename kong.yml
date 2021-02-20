@@ -20,7 +20,7 @@ plugins:
     enabled: true
     service: products
     config:
-      minute: 10
+      minute: 60
       policy: local
   - name: key-auth
     enabled: true
