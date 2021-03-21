@@ -3,6 +3,7 @@ package products
 import (
 	"context"
 	"database/sql"
+	_ "embed"
 
 	"github.com/heikkilamarko/goutils"
 	"github.com/rs/zerolog"
@@ -19,16 +20,14 @@ func NewSQLRepository(db *sql.DB, l *zerolog.Logger) *SQLRepository {
 	return &SQLRepository{db, l}
 }
 
+//go:embed sql/get_products.sql
+var qetProductsSQL string
+
 // GetProducts method
 func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery) ([]*Product, error) {
 	rows, err := r.db.QueryContext(
 		ctx,
-		`
-		SELECT id, name, description, price, comment
-		FROM products.products
-		ORDER BY id
-		LIMIT $1 OFFSET $2
-		`,
+		qetProductsSQL,
 		query.Limit, query.Offset)
 
 	if err != nil {
@@ -54,17 +53,16 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 	return products, nil
 }
 
+//go:embed sql/get_product.sql
+var qetProductSQL string
+
 // GetProduct method
 func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) (*Product, error) {
 	p := &Product{}
 
 	err := r.db.QueryRowContext(
 		ctx,
-		`
-		SELECT id, name, description, price, comment
-		FROM products.products
-		WHERE id=$1
-		`,
+		qetProductSQL,
 		query.ID).Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment)
 
 	if err != nil {
@@ -80,17 +78,16 @@ func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) 
 	return p, nil
 }
 
+//go:embed sql/create_product.sql
+var createProductSQL string
+
 // CreateProduct method
 func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProductCommand) error {
 	p := command.Product
 
 	err := r.db.QueryRowContext(
 		ctx,
-		`
-		INSERT INTO products.products(name, description, price, comment)
-		VALUES($1, $2, $3, $4)
-		RETURNING id
-		`,
+		createProductSQL,
 		p.Name, p.Description, p.Price, p.Comment).Scan(&p.ID)
 
 	if err != nil {
@@ -101,17 +98,16 @@ func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProduc
 	return nil
 }
 
+//go:embed sql/update_product.sql
+var updateProductSQL string
+
 // UpdateProduct method
 func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProductCommand) error {
 	p := command.Product
 
 	result, err := r.db.ExecContext(
 		ctx,
-		`
-		UPDATE products.products
-		SET name=$1, description=$2, price=$3, comment=$4
-		WHERE id=$5
-		`,
+		updateProductSQL,
 		p.Name, p.Description, p.Price, p.Comment, p.ID)
 
 	if err != nil {
@@ -133,14 +129,14 @@ func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProduc
 	return nil
 }
 
+//go:embed sql/delete_product.sql
+var deleteProductSQL string
+
 // DeleteProduct method
 func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProductCommand) error {
 	result, err := r.db.ExecContext(
 		ctx,
-		`
-		DELETE FROM products.products
-		WHERE id=$1
-		`,
+		deleteProductSQL,
 		command.ID)
 
 	if err != nil {
@@ -162,15 +158,16 @@ func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProduc
 	return nil
 }
 
+//go:embed sql/get_price_range.sql
+var getPriceRangeSQL string
+
 // GetPriceRange method
 func (r *SQLRepository) GetPriceRange(ctx context.Context) (*PriceRange, error) {
 	pr := &PriceRange{}
 
 	err := r.db.QueryRowContext(
 		ctx,
-		`
-		CALL products.price_range_proc(0,0)
-		`).Scan(&pr.MinPrice, &pr.MaxPrice)
+		getPriceRangeSQL).Scan(&pr.MinPrice, &pr.MaxPrice)
 
 	if err != nil {
 		r.logger.Err(err).Send()
