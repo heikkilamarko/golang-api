@@ -3,7 +3,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"time"
 
@@ -33,7 +32,7 @@ func (c *Config) String() string {
 	cc.APIKey = "***"
 	cc.DBConnectionString = "***"
 	if b, err := json.Marshal(cc); err == nil {
-		return fmt.Sprintf("%s", string(b))
+		return string(b)
 	}
 	return ""
 }
