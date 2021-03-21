@@ -12,12 +12,12 @@ import (
 	"github.com/rs/zerolog"
 
 	// PostgreSQL driver
-	_ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 // RegisterRoutes func
 func RegisterRoutes(router *mux.Router, config *config.Config, logger *zerolog.Logger) error {
-	db, err := sql.Open("postgres", config.DBConnectionString)
+	db, err := sql.Open("pgx", config.DBConnectionString)
 	if err != nil {
 		return err
 	}
