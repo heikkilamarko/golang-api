@@ -8,5 +8,5 @@ require (
 	github.com/jackc/pgx/v4 v4.10.1
 	github.com/ory/graceful v0.1.1
 	github.com/rs/cors v1.7.0
-	github.com/rs/zerolog v1.20.0
+	github.com/rs/zerolog v1.21.0
 )
