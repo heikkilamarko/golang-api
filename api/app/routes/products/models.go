@@ -12,7 +12,8 @@ type Product struct {
 	Description *string    `json:"description,omitempty"`
 	Price       float64    `json:"price"`
 	Comment     *string    `json:"comment,omitempty"`
-	CreatedAt   *time.Time `json:"created_at"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
 }
 
 // PriceRange struct

@@ -4,7 +4,8 @@ SELECT
     description,
     price,
     comment,
-    created_at
+    created_at,
+    updated_at
 FROM
     products.products
 WHERE

@@ -43,7 +43,17 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 	for rows.Next() {
 		p := &Product{}
 
-		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment, &p.CreatedAt); err != nil {
+		err := rows.Scan(
+			&p.ID,
+			&p.Name,
+			&p.Description,
+			&p.Price,
+			&p.Comment,
+			&p.CreatedAt,
+			&p.UpdatedAt,
+		)
+
+		if err != nil {
 			r.logger.Err(err).Send()
 			return nil, goutils.ErrInternalError
 		}
@@ -61,10 +71,15 @@ var qetProductSQL string
 func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) (*Product, error) {
 	p := &Product{}
 
-	err := r.db.QueryRowContext(
-		ctx,
-		qetProductSQL,
-		query.ID).Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment, &p.CreatedAt)
+	err := r.db.QueryRowContext(ctx, qetProductSQL, query.ID).Scan(
+		&p.ID,
+		&p.Name,
+		&p.Description,
+		&p.Price,
+		&p.Comment,
+		&p.CreatedAt,
+		&p.UpdatedAt,
+	)
 
 	if err != nil {
 		r.logger.Err(err).Send()
@@ -86,14 +101,15 @@ var createProductSQL string
 func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProductCommand) error {
 	p := command.Product
 
-	now := time.Now()
+	p.CreatedAt = time.Now()
 
-	p.CreatedAt = &now
-
-	err := r.db.QueryRowContext(
-		ctx,
-		createProductSQL,
-		p.Name, p.Description, p.Price, p.Comment, p.CreatedAt.Format(time.RFC3339)).Scan(&p.ID)
+	err := r.db.QueryRowContext(ctx, createProductSQL,
+		p.Name,
+		p.Description,
+		p.Price,
+		p.Comment,
+		p.CreatedAt).
+		Scan(&p.ID)
 
 	if err != nil {
 		r.logger.Err(err).Send()
@@ -110,10 +126,18 @@ var updateProductSQL string
 func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProductCommand) error {
 	p := command.Product
 
-	result, err := r.db.ExecContext(
-		ctx,
-		updateProductSQL,
-		p.Name, p.Description, p.Price, p.Comment, p.ID)
+	now := time.Now()
+
+	p.UpdatedAt = &now
+
+	result, err := r.db.ExecContext(ctx, updateProductSQL,
+		p.Name,
+		p.Description,
+		p.Price,
+		p.Comment,
+		p.UpdatedAt,
+		p.ID,
+	)
 
 	if err != nil {
 		r.logger.Err(err).Send()
@@ -131,10 +155,15 @@ func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProduc
 		return goutils.ErrNotFound
 	}
 
-	err = r.db.QueryRowContext(
-		ctx,
-		qetProductSQL,
-		p.ID).Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment, &p.CreatedAt)
+	err = r.db.QueryRowContext(ctx, qetProductSQL, p.ID).Scan(
+		&p.ID,
+		&p.Name,
+		&p.Description,
+		&p.Price,
+		&p.Comment,
+		&p.CreatedAt,
+		&p.UpdatedAt,
+	)
 
 	if err != nil {
 		r.logger.Err(err).Send()
@@ -149,10 +178,7 @@ var deleteProductSQL string
 
 // DeleteProduct method
 func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProductCommand) error {
-	result, err := r.db.ExecContext(
-		ctx,
-		deleteProductSQL,
-		command.ID)
+	result, err := r.db.ExecContext(ctx, deleteProductSQL, command.ID)
 
 	if err != nil {
 		r.logger.Err(err).Send()
@@ -180,9 +206,10 @@ var getPriceRangeSQL string
 func (r *SQLRepository) GetPriceRange(ctx context.Context) (*PriceRange, error) {
 	pr := &PriceRange{}
 
-	err := r.db.QueryRowContext(
-		ctx,
-		getPriceRangeSQL).Scan(&pr.MinPrice, &pr.MaxPrice)
+	err := r.db.QueryRowContext(ctx, getPriceRangeSQL).Scan(
+		&pr.MinPrice,
+		&pr.MaxPrice,
+	)
 
 	if err != nil {
 		r.logger.Err(err).Send()
