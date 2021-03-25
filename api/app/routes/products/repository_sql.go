@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	_ "embed"
+	"time"
 
 	"github.com/heikkilamarko/goutils"
 	"github.com/rs/zerolog"
@@ -42,7 +43,7 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 	for rows.Next() {
 		p := &Product{}
 
-		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment); err != nil {
+		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment, &p.CreatedAt); err != nil {
 			r.logger.Err(err).Send()
 			return nil, goutils.ErrInternalError
 		}
@@ -63,7 +64,7 @@ func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) 
 	err := r.db.QueryRowContext(
 		ctx,
 		qetProductSQL,
-		query.ID).Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment)
+		query.ID).Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment, &p.CreatedAt)
 
 	if err != nil {
 		r.logger.Err(err).Send()
@@ -85,10 +86,14 @@ var createProductSQL string
 func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProductCommand) error {
 	p := command.Product
 
+	now := time.Now()
+
+	p.CreatedAt = &now
+
 	err := r.db.QueryRowContext(
 		ctx,
 		createProductSQL,
-		p.Name, p.Description, p.Price, p.Comment).Scan(&p.ID)
+		p.Name, p.Description, p.Price, p.Comment, p.CreatedAt.Format(time.RFC3339)).Scan(&p.ID)
 
 	if err != nil {
 		r.logger.Err(err).Send()
@@ -124,6 +129,16 @@ func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProduc
 
 	if count < 1 {
 		return goutils.ErrNotFound
+	}
+
+	err = r.db.QueryRowContext(
+		ctx,
+		qetProductSQL,
+		p.ID).Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Comment, &p.CreatedAt)
+
+	if err != nil {
+		r.logger.Err(err).Send()
+		return goutils.ErrInternalError
 	}
 
 	return nil

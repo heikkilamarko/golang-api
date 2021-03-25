@@ -3,7 +3,8 @@ SELECT
     name,
     description,
     price,
-    comment
+    comment,
+    created_at
 FROM
     products.products
 ORDER BY

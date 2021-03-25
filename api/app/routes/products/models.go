@@ -1,14 +1,18 @@
 package products
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 // Product struct
 type Product struct {
-	ID          int     `json:"id"`
-	Name        string  `json:"name"`
-	Description *string `json:"description,omitempty"`
-	Price       float64 `json:"price"`
-	Comment     *string `json:"comment,omitempty"`
+	ID          int        `json:"id"`
+	Name        string     `json:"name"`
+	Description *string    `json:"description,omitempty"`
+	Price       float64    `json:"price"`
+	Comment     *string    `json:"comment,omitempty"`
+	CreatedAt   *time.Time `json:"created_at"`
 }
 
 // PriceRange struct
