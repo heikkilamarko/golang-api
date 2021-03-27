@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   title: Products API
   description: |
@@ -85,7 +85,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/id"
       requestBody:
-        $ref: "#/components/requestBodies/Product"
+        $ref: "#/components/requestBodies/UpdatedProduct"
       responses:
         "200":
           $ref: "#/components/responses/Product"
@@ -165,6 +165,12 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/NewProduct"
+    UpdatedProduct:
+      description: Updated Product
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UpdatedProduct"
   responses:
     Products:
       description: Products
@@ -224,11 +230,12 @@ components:
         - id
         - name
         - price
+        - created_at
       properties:
         id:
-          type: string
+          type: integer
           description: Product ID
-          example: 123
+          example: 1
         name:
           type: string
           description: Product name
@@ -245,6 +252,14 @@ components:
           type: string
           description: Free text comment
           example: The most reliable car ever.
+        created_at:
+          type: string
+          description: Creation timestamp
+          example: "2021-03-25T17:41:50Z"
+        updated_at:
+          type: string
+          description: Update timestamp
+          example: "2021-03-25T17:41:50Z"
     NewProduct:
       type: object
       description: Product data
@@ -252,6 +267,32 @@ components:
         - name
         - price
       properties:
+        name:
+          type: string
+          description: Product name
+          example: Toyota Corolla
+        description:
+          type: string
+          description: Product name
+          example: Gray Toyota Corolla from year 2006.
+        price:
+          type: number
+          description: Product price
+          example: 10000
+        comment:
+          type: string
+          description: Free text comment
+          example: The most reliable car ever.
+    UpdatedProduct:
+      type: object
+      description: Product data
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          description: Product ID
+          example: 1
         name:
           type: string
           description: Product name
