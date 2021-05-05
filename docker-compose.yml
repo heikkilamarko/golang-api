@@ -64,6 +64,7 @@ services:
 
   grafana:
     image: grafana/grafana
+    restart: on-failure
     ports:
       - "3000:3000"
     env_file:
@@ -72,6 +73,8 @@ services:
       - grafana-data:/var/lib/grafana
     networks:
       - golang-api-net
+    depends_on:
+      - db
 
   kong:
     image: kong
