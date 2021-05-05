@@ -7,6 +7,6 @@ SELECT
     created_at,
     updated_at
 FROM
-    products.products
+    products
 WHERE
     id = $1

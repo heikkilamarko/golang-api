@@ -1,5 +1,5 @@
 UPDATE
-    products.products
+    products
 SET
     name = $1,
     description = $2,

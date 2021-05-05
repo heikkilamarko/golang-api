@@ -1,2 +1,2 @@
-DELETE FROM products.products
+DELETE FROM products
 WHERE id = $1

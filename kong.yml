@@ -39,4 +39,4 @@ plugins:
 
 keyauth_credentials:
   - consumer: products
-    key: API_KEY
+    key: abc123

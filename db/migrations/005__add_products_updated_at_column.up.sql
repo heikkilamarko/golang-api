@@ -1,3 +1,3 @@
-ALTER TABLE products.products
+ALTER TABLE products
     ADD updated_at timestamptz;
 

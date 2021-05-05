@@ -6,7 +6,7 @@ services:
     image: golang-api
     restart: on-failure
     env_file:
-      - ../golang-api-secrets/api.env
+      - ./env/api.env
     ports:
       - 8080:8080
     networks:
@@ -17,11 +17,12 @@ services:
   db:
     image: postgres:13.2
     env_file:
-      - ../golang-api-secrets/postgres.env
+      - ./env/postgres.env
     ports:
       - 5432:5432
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - golang-api-net
 
@@ -29,7 +30,7 @@ services:
     image: minio/minio
     command: server /data
     env_file:
-      - ../golang-api-secrets/minio.env
+      - ./env/minio.env
     ports:
       - 9000:9000
     volumes:
@@ -66,7 +67,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ../golang-api-secrets/grafana.env
+      - ./env/grafana.env
     volumes:
       - grafana-data:/var/lib/grafana
     networks:
@@ -95,7 +96,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     env_file:
-      - ../golang-api-secrets/pgadmin.env
+      - ./env/pgadmin.env
     ports:
       - 8011:80
     volumes:
