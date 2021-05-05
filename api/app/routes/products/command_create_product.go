@@ -17,7 +17,7 @@ func (c *Controller) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := c.Repository.CreateProduct(r.Context(), command); err != nil {
+	if err := c.repository.createProduct(r.Context(), command); err != nil {
 		goutils.WriteInternalError(w, nil)
 		return
 	}
@@ -25,10 +25,10 @@ func (c *Controller) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	goutils.WriteCreated(w, command.Product, nil)
 }
 
-func parseCreateProductRequest(r *http.Request) (*CreateProductCommand, error) {
+func parseCreateProductRequest(r *http.Request) (*createProductCommand, error) {
 	validationErrors := map[string]string{}
 
-	product := &Product{}
+	product := &product{}
 	if err := json.NewDecoder(r.Body).Decode(product); err != nil {
 		validationErrors[constants.FieldRequestBody] = constants.ErrCodeInvalidPayload
 	}
@@ -37,5 +37,5 @@ func parseCreateProductRequest(r *http.Request) (*CreateProductCommand, error) {
 		return nil, goutils.NewValidationError(validationErrors)
 	}
 
-	return &CreateProductCommand{product}, nil
+	return &createProductCommand{product}, nil
 }

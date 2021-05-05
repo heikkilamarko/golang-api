@@ -18,7 +18,7 @@ func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	product, err := c.Repository.GetProduct(r.Context(), query)
+	product, err := c.repository.getProduct(r.Context(), query)
 
 	if err != nil {
 		switch err {
@@ -33,7 +33,7 @@ func (c *Controller) GetProduct(w http.ResponseWriter, r *http.Request) {
 	goutils.WriteOK(w, product, nil)
 }
 
-func parseGetProductRequest(r *http.Request) (*GetProductQuery, error) {
+func parseGetProductRequest(r *http.Request) (*getProductQuery, error) {
 	validationErrors := map[string]string{}
 
 	id, err := strconv.Atoi(mux.Vars(r)[constants.FieldID])
@@ -45,5 +45,5 @@ func parseGetProductRequest(r *http.Request) (*GetProductQuery, error) {
 		return nil, goutils.NewValidationError(validationErrors)
 	}
 
-	return &GetProductQuery{id}, nil
+	return &getProductQuery{id}, nil
 }

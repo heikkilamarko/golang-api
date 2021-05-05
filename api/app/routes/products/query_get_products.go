@@ -17,7 +17,7 @@ func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	products, err := c.Repository.GetProducts(r.Context(), query)
+	products, err := c.repository.getProducts(r.Context(), query)
 
 	if err != nil {
 		goutils.WriteInternalError(w, nil)
@@ -27,7 +27,7 @@ func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
 	goutils.WriteOK(w, products, query)
 }
 
-func parseGetProductsRequest(r *http.Request) (*GetProductsQuery, error) {
+func parseGetProductsRequest(r *http.Request) (*getProductsQuery, error) {
 	validationErrors := map[string]string{}
 
 	var offset int = 0
@@ -53,5 +53,5 @@ func parseGetProductsRequest(r *http.Request) (*GetProductsQuery, error) {
 		return nil, goutils.NewValidationError(validationErrors)
 	}
 
-	return &GetProductsQuery{offset, limit}, nil
+	return &getProductsQuery{offset, limit}, nil
 }

@@ -19,17 +19,17 @@ servers:
 security:
   - ApiKeyAuth: []
 tags:
-  - name: /products queries
+  - name: Product queries
     description: Query operations
-  - name: /products commands
+  - name: Product commands
     description: Command operations
 paths:
   /products:
     get:
       summary: Browse products
-      description: Browse products descriptions
+      description: Browse products
       tags:
-        - /products queries
+        - Product queries
       parameters:
         - $ref: "#/components/parameters/offset"
         - $ref: "#/components/parameters/limit"
@@ -43,10 +43,10 @@ paths:
         "500":
           $ref: "#/components/responses/Error"
     post:
-      summary: Creates product by id
+      summary: Creates a product
       description: Creates a product
       tags:
-        - /products commands
+        - Product commands
       requestBody:
         $ref: "#/components/requestBodies/NewProduct"
       responses:
@@ -61,9 +61,9 @@ paths:
   /products/{id}:
     get:
       summary: Get product by id
-      description: Gets a product
+      description: Get product by id
       tags:
-        - /products queries
+        - Product queries
       parameters:
         - $ref: "#/components/parameters/id"
       responses:
@@ -78,10 +78,10 @@ paths:
         "500":
           $ref: "#/components/responses/Error"
     put:
-      summary: Update product by id
-      description: Updates a product
+      summary: Update a product
+      description: Update a product
       tags:
-        - /products commands
+        - Product commands
       parameters:
         - $ref: "#/components/parameters/id"
       requestBody:
@@ -98,10 +98,10 @@ paths:
         "500":
           $ref: "#/components/responses/Error"
     delete:
-      summary: Delete product by id
-      description: Deletes a product
+      summary: Delete a product
+      description: Delete a product
       tags:
-        - /products commands
+        - Product commands
       parameters:
         - $ref: "#/components/parameters/id"
       responses:
@@ -120,7 +120,7 @@ paths:
       summary: Get product price range
       description: Get product price range
       tags:
-        - /products queries
+        - Product queries
       responses:
         "200":
           $ref: "#/components/responses/PriceRange"
@@ -239,11 +239,11 @@ components:
         name:
           type: string
           description: Product name
-          example: Toyota Corolla
+          example: Demo product
         description:
           type: string
           description: Product description
-          example: Gray Toyota Corolla from year 2006.
+          example: Demo product description
         price:
           type: number
           description: Product price
@@ -251,7 +251,7 @@ components:
         comment:
           type: string
           description: Free text comment
-          example: The most reliable car ever.
+          example: Demo product comment
         created_at:
           type: string
           description: Creation timestamp
@@ -270,11 +270,11 @@ components:
         name:
           type: string
           description: Product name
-          example: Toyota Corolla
+          example: Demo product
         description:
           type: string
-          description: Product name
-          example: Gray Toyota Corolla from year 2006.
+          description: Product description
+          example: Demo product description
         price:
           type: number
           description: Product price
@@ -282,7 +282,7 @@ components:
         comment:
           type: string
           description: Free text comment
-          example: The most reliable car ever.
+          example: Demo product comment
     UpdatedProduct:
       type: object
       description: Product data
@@ -296,11 +296,11 @@ components:
         name:
           type: string
           description: Product name
-          example: Toyota Corolla
+          example: Demo product
         description:
           type: string
-          description: Product name
-          example: Gray Toyota Corolla from year 2006.
+          description: Product description
+          example: Demo product description
         price:
           type: number
           description: Product price
@@ -308,7 +308,7 @@ components:
         comment:
           type: string
           description: Free text comment
-          example: The most reliable car ever.
+          example: Demo product comment
     PriceRange:
       type: object
       description: Price range response

@@ -18,7 +18,7 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := c.Repository.DeleteProduct(r.Context(), command); err != nil {
+	if err := c.repository.deleteProduct(r.Context(), command); err != nil {
 		switch err {
 		case goutils.ErrNotFound:
 			goutils.WriteNotFound(w, nil)
@@ -31,7 +31,7 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	goutils.WriteNoContent(w)
 }
 
-func parseDeleteProductRequest(r *http.Request) (*DeleteProductCommand, error) {
+func parseDeleteProductRequest(r *http.Request) (*deleteProductCommand, error) {
 	validationErrors := map[string]string{}
 
 	id, err := strconv.Atoi(mux.Vars(r)[constants.FieldID])
@@ -43,5 +43,5 @@ func parseDeleteProductRequest(r *http.Request) (*DeleteProductCommand, error) {
 		return nil, goutils.NewValidationError(validationErrors)
 	}
 
-	return &DeleteProductCommand{id}, nil
+	return &deleteProductCommand{id}, nil
 }

@@ -10,22 +10,19 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// SQLRepository struct
-type SQLRepository struct {
+type repository struct {
 	db     *sql.DB
 	logger *zerolog.Logger
 }
 
-// NewSQLRepository func
-func NewSQLRepository(db *sql.DB, l *zerolog.Logger) *SQLRepository {
-	return &SQLRepository{db, l}
+func newRepository(db *sql.DB, l *zerolog.Logger) *repository {
+	return &repository{db, l}
 }
 
 //go:embed sql/get_products.sql
 var qetProductsSQL string
 
-// GetProducts method
-func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery) ([]*Product, error) {
+func (r *repository) getProducts(ctx context.Context, query *getProductsQuery) ([]*product, error) {
 	rows, err := r.db.QueryContext(
 		ctx,
 		qetProductsSQL,
@@ -38,10 +35,10 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 
 	defer rows.Close()
 
-	products := []*Product{}
+	products := []*product{}
 
 	for rows.Next() {
-		p := &Product{}
+		p := &product{}
 
 		err := rows.Scan(
 			&p.ID,
@@ -67,9 +64,8 @@ func (r *SQLRepository) GetProducts(ctx context.Context, query *GetProductsQuery
 //go:embed sql/get_product.sql
 var qetProductSQL string
 
-// GetProduct method
-func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) (*Product, error) {
-	p := &Product{}
+func (r *repository) getProduct(ctx context.Context, query *getProductQuery) (*product, error) {
+	p := &product{}
 
 	err := r.db.QueryRowContext(ctx, qetProductSQL, query.ID).Scan(
 		&p.ID,
@@ -97,8 +93,7 @@ func (r *SQLRepository) GetProduct(ctx context.Context, query *GetProductQuery) 
 //go:embed sql/create_product.sql
 var createProductSQL string
 
-// CreateProduct method
-func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProductCommand) error {
+func (r *repository) createProduct(ctx context.Context, command *createProductCommand) error {
 	p := command.Product
 
 	p.CreatedAt = time.Now()
@@ -122,8 +117,7 @@ func (r *SQLRepository) CreateProduct(ctx context.Context, command *CreateProduc
 //go:embed sql/update_product.sql
 var updateProductSQL string
 
-// UpdateProduct method
-func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProductCommand) error {
+func (r *repository) updateProduct(ctx context.Context, command *updateProductCommand) error {
 	p := command.Product
 
 	now := time.Now()
@@ -176,8 +170,7 @@ func (r *SQLRepository) UpdateProduct(ctx context.Context, command *UpdateProduc
 //go:embed sql/delete_product.sql
 var deleteProductSQL string
 
-// DeleteProduct method
-func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProductCommand) error {
+func (r *repository) deleteProduct(ctx context.Context, command *deleteProductCommand) error {
 	result, err := r.db.ExecContext(ctx, deleteProductSQL, command.ID)
 
 	if err != nil {
@@ -202,9 +195,8 @@ func (r *SQLRepository) DeleteProduct(ctx context.Context, command *DeleteProduc
 //go:embed sql/get_price_range.sql
 var getPriceRangeSQL string
 
-// GetPriceRange method
-func (r *SQLRepository) GetPriceRange(ctx context.Context) (*PriceRange, error) {
-	pr := &PriceRange{}
+func (r *repository) getPriceRange(ctx context.Context) (*priceRange, error) {
+	pr := &priceRange{}
 
 	err := r.db.QueryRowContext(ctx, getPriceRangeSQL).Scan(
 		&pr.MinPrice,

@@ -19,7 +19,7 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := c.Repository.UpdateProduct(r.Context(), command); err != nil {
+	if err := c.repository.updateProduct(r.Context(), command); err != nil {
 		switch err {
 		case goutils.ErrNotFound:
 			goutils.WriteNotFound(w, nil)
@@ -32,7 +32,7 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	goutils.WriteOK(w, command.Product, nil)
 }
 
-func parseUpdateProductRequest(r *http.Request) (*UpdateProductCommand, error) {
+func parseUpdateProductRequest(r *http.Request) (*updateProductCommand, error) {
 	validationErrors := map[string]string{}
 
 	id, err := strconv.Atoi(mux.Vars(r)[constants.FieldID])
@@ -40,7 +40,7 @@ func parseUpdateProductRequest(r *http.Request) (*UpdateProductCommand, error) {
 		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
 	}
 
-	product := &Product{}
+	product := &product{}
 	if err := json.NewDecoder(r.Body).Decode(product); err != nil {
 		validationErrors[constants.FieldRequestBody] = constants.ErrCodeInvalidPayload
 	}
@@ -57,5 +57,5 @@ func parseUpdateProductRequest(r *http.Request) (*UpdateProductCommand, error) {
 		return nil, goutils.NewValidationError(validationErrors)
 	}
 
-	return &UpdateProductCommand{product}, nil
+	return &updateProductCommand{product}, nil
 }
