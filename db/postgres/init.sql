@@ -1,3 +1,1 @@
 CREATE DATABASE golang_api;
-
-CREATE DATABASE grafana;

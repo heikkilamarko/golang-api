@@ -1,0 +1,42 @@
+_format_version: "2.1"
+_transform: true
+
+services:
+  - name: products
+    url: http://api:8080
+    tags:
+      - products
+    routes:
+      - name: products
+        paths:
+          - /
+
+consumers:
+  - username: products
+    custom_id: products
+
+plugins:
+  - name: rate-limiting
+    enabled: true
+    service: products
+    config:
+      minute: 60
+      policy: local
+  - name: key-auth
+    enabled: true
+    service: products
+    config:
+      key_names:
+        - x-api-key
+  - name: cors
+    enabled: true
+    service: products
+    config:
+      origins:
+        - "*"
+      credentials: true
+      max_age: 3600
+
+keyauth_credentials:
+  - consumer: products
+    key: abc123
