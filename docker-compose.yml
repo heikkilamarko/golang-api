@@ -39,8 +39,7 @@ services:
       - db
 
   kong:
-    build: ./kong
-    image: kong
+    image: kong/kong-gateway
     restart: on-failure
     env_file:
       - ./env/kong.env
@@ -49,11 +48,41 @@ services:
       - 8443:8443
       - 8001:8001
       - 8444:8444
+      - 8002:8002
+      - 8445:8445
+      - 8003:8003
+      - 8004:8004
     networks:
       - backend
+    depends_on:
+      - kong-db
+
+  kong-db:
+    image: postgres:13.2
+    restart: on-failure
+    env_file:
+      - ./env/postgres-kong.env
+    ports:
+      - 5433:5432
+    volumes:
+      - kong-db:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  kong-db-migrate:
+    image: kong/kong-gateway
+    command: kong migrations bootstrap
+    restart: on-failure
+    env_file:
+      - ./env/kong.env
+    networks:
+      - backend
+    depends_on:
+      - kong-db
 
 networks:
   backend:
 
 volumes:
   db:
+  kong-db:
