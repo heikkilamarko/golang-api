@@ -44,8 +44,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{api_base_url}}/products?limit=3",
-          "host": ["{{api_base_url}}"],
+          "raw": "{{api_url}}/products?limit=3",
+          "host": ["{{api_url}}"],
           "path": ["products"],
           "query": [
             {
@@ -132,8 +132,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{api_base_url}}/products?limit=3",
-          "host": ["{{api_base_url}}"],
+          "raw": "{{api_url}}/products?limit=3",
+          "host": ["{{api_url}}"],
           "path": ["products"],
           "query": [
             {
@@ -213,8 +213,8 @@
           }
         },
         "url": {
-          "raw": "{{api_base_url}}/products",
-          "host": ["{{api_base_url}}"],
+          "raw": "{{api_url}}/products",
+          "host": ["{{api_url}}"],
           "path": ["products"]
         }
       },
@@ -277,8 +277,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{api_base_url}}/products/{{created_id}}",
-          "host": ["{{api_base_url}}"],
+          "raw": "{{api_url}}/products/{{created_id}}",
+          "host": ["{{api_url}}"],
           "path": ["products", "{{created_id}}"]
         }
       },
@@ -353,8 +353,8 @@
           }
         },
         "url": {
-          "raw": "{{api_base_url}}/products/{{created_id}}",
-          "host": ["{{api_base_url}}"],
+          "raw": "{{api_url}}/products/{{created_id}}",
+          "host": ["{{api_url}}"],
           "path": ["products", "{{created_id}}"]
         }
       },
@@ -382,8 +382,8 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "{{api_base_url}}/products/{{created_id}}",
-          "host": ["{{api_base_url}}"],
+          "raw": "{{api_url}}/products/{{created_id}}",
+          "host": ["{{api_url}}"],
           "path": ["products", "{{created_id}}"]
         }
       },
@@ -434,8 +434,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{api_base_url}}/products/pricerange",
-          "host": ["{{api_base_url}}"],
+          "raw": "{{api_url}}/products/pricerange",
+          "host": ["{{api_url}}"],
           "path": ["products", "pricerange"]
         }
       },
