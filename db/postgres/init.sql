@@ -1,1 +1,3 @@
 CREATE DATABASE golang_api;
+
+CREATE DATABASE kong;

@@ -55,21 +55,10 @@ services:
     networks:
       - backend
     depends_on:
-      - kong-db
+      - api
+      - db
 
-  kong-db:
-    image: postgres:13.2
-    restart: on-failure
-    env_file:
-      - ./env/postgres-kong.env
-    ports:
-      - 5433:5432
-    volumes:
-      - kong-db:/var/lib/postgresql/data
-    networks:
-      - backend
-
-  kong-db-migrate:
+  kong-migrate:
     image: kong/kong-gateway
     command: kong migrations bootstrap
     restart: on-failure
@@ -78,11 +67,10 @@ services:
     networks:
       - backend
     depends_on:
-      - kong-db
+      - db
 
 networks:
   backend:
 
 volumes:
   db:
-  kong-db:
