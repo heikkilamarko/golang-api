@@ -22,6 +22,7 @@
 .build
 build
 
+kong/results
 test/results
 
 .idea

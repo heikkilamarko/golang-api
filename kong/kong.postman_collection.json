@@ -1,0 +1,189 @@
+{
+	"info": {
+		"_postman_id": "778d4301-d65d-418f-9cf8-e36491f98a49",
+		"name": "Kong Gateway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{kong_url}}/status",
+					"host": [
+						"{{kong_url}}"
+					],
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create or update service",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{service_id}}\",\n    \"name\": \"products\",\n    \"protocol\": \"http\",\n    \"host\": \"api\",\n    \"port\": 8080\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{kong_url}}/services/products",
+					"host": [
+						"{{kong_url}}"
+					],
+					"path": [
+						"services",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create or update route",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{route_id}}\",\n    \"name\": \"products\",\n    \"protocols\": [\n        \"http\"\n    ],\n    \"paths\": [\n        \"/\"\n    ],\n    \"service\": {\n        \"id\": \"{{service_id}}\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{kong_url}}/routes/{{route_id}}",
+					"host": [
+						"{{kong_url}}"
+					],
+					"path": [
+						"routes",
+						"{{route_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create or update consumer",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{consumer_id}}\",\n    \"username\": \"products\",\n    \"custom_id\": \"products\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{kong_url}}/consumers/{{consumer_id}}",
+					"host": [
+						"{{kong_url}}"
+					],
+					"path": [
+						"consumers",
+						"{{consumer_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create key auth plugin",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{key_auth_plugin_id}}\",\n    \"name\": \"key-auth\",\n    \"service\": {\n        \"id\": \"{{service_id}}\"\n    },\n    \"config\": {\n        \"key_in_query\": false,\n        \"key_names\": [\n            \"x-api-key\"\n        ],\n        \"key_in_header\": true,\n        \"run_on_preflight\": true,\n        \"hide_credentials\": false,\n        \"key_in_body\": false\n    },\n    \"protocols\": [\n        \"http\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{kong_url}}/plugins/{{key_auth_plugin_id}}",
+					"host": [
+						"{{kong_url}}"
+					],
+					"path": [
+						"plugins",
+						"{{key_auth_plugin_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create rate-limiting plugin",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{rate_limiting_plugin_id}}\",\n    \"name\": \"rate-limiting\",\n    \"service\": {\n        \"id\": \"{{service_id}}\"\n    },\n    \"consumer\": {\n        \"id\": \"{{consumer_id}}\"\n    },\n    \"config\": {\n        \"minute\": 60,\n        \"limit_by\": \"consumer\",\n        \"policy\": \"local\"\n    },\n    \"protocols\": [\n        \"http\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{kong_url}}/plugins/{{rate_limiting_plugin_id}}",
+					"host": [
+						"{{kong_url}}"
+					],
+					"path": [
+						"plugins",
+						"{{rate_limiting_plugin_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create key auth",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"{{api_key}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{kong_url}}/consumers/{{consumer_id}}/key-auth",
+					"host": [
+						"{{kong_url}}"
+					],
+					"path": [
+						"consumers",
+						"{{consumer_id}}",
+						"key-auth"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
