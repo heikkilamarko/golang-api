@@ -22,7 +22,7 @@
 .build
 build
 
-kong/results
+kong/postman/results
 test/results
 
 .idea
