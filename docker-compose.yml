@@ -69,6 +69,17 @@ services:
     depends_on:
       - db
 
+  kong-configure:
+    build: ./kong/curl
+    image: kong-configure
+    restart: on-failure
+    env_file:
+      - ./env/kong-configure.env
+    networks:
+      - backend
+    depends_on:
+      - kong
+
 networks:
   backend:
 
