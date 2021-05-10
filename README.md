@@ -21,6 +21,8 @@
 
 ### _Option 1:_ curl
 
+> Included in `docker-compose.yml`
+
 ```bash
 # Navigate to the kong/curl directory
 > cd kong/curl
