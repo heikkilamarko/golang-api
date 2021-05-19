@@ -1,27 +1,8 @@
 package main
 
-import (
-	"os"
-	"products-api/app"
-	"products-api/app/config"
-
-	"github.com/rs/zerolog"
-)
+import "products-api/app"
 
 func main() {
-	c := config.New()
-	c.Load()
-
-	zerolog.SetGlobalLevel(c.LogLevel)
-
-	l := zerolog.New(os.Stderr).
-		With().
-		Timestamp().
-		Str("app", c.App).
-		Logger()
-
-	l.Info().Str("config", c.String()).Send()
-
-	a := app.New(c, &l)
+	var a app.App
 	a.Run()
 }
