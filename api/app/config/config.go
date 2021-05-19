@@ -26,11 +26,13 @@ func New() *Config {
 	return &Config{}
 }
 
+const redactedString = "[redacted]"
+
 // String method
 func (c *Config) String() string {
 	cc := *c
-	cc.APIKey = "***"
-	cc.DBConnectionString = "***"
+	cc.APIKey = redactedString
+	cc.DBConnectionString = redactedString
 	if b, err := json.Marshal(cc); err == nil {
 		return string(b)
 	}

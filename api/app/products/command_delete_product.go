@@ -2,11 +2,10 @@ package products
 
 import (
 	"net/http"
-	"products-api/app/constants"
+	"products-api/app/utils"
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/heikkilamarko/goutils"
 )
 
 // DeleteProduct command
@@ -14,33 +13,35 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	command, err := parseDeleteProductRequest(r)
 
 	if err != nil {
-		goutils.WriteValidationError(w, err)
+		c.logError(err)
+		utils.WriteValidationError(w, err)
 		return
 	}
 
 	if err := c.repository.deleteProduct(r.Context(), command); err != nil {
+		c.logError(err)
 		switch err {
-		case goutils.ErrNotFound:
-			goutils.WriteNotFound(w, nil)
+		case utils.ErrNotFound:
+			utils.WriteNotFound(w, nil)
 		default:
-			goutils.WriteInternalError(w, nil)
+			utils.WriteInternalError(w, nil)
 		}
 		return
 	}
 
-	goutils.WriteNoContent(w)
+	utils.WriteNoContent(w)
 }
 
 func parseDeleteProductRequest(r *http.Request) (*deleteProductCommand, error) {
-	validationErrors := map[string]string{}
+	errorMap := map[string]string{}
 
-	id, err := strconv.Atoi(mux.Vars(r)[constants.FieldID])
+	id, err := strconv.Atoi(mux.Vars(r)[utils.FieldID])
 	if err != nil {
-		validationErrors[constants.FieldID] = constants.ErrCodeInvalidProductID
+		errorMap[utils.FieldID] = utils.ErrCodeInvalidID
 	}
 
-	if 0 < len(validationErrors) {
-		return nil, goutils.NewValidationError(validationErrors)
+	if 0 < len(errorMap) {
+		return nil, utils.NewValidationError(errorMap)
 	}
 
 	return &deleteProductCommand{id}, nil

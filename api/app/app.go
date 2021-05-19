@@ -8,12 +8,12 @@ import (
 	"os"
 	"os/signal"
 	"products-api/app/config"
-	"products-api/app/routes/products"
+	"products-api/app/middleware"
+	"products-api/app/products"
 	"syscall"
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/heikkilamarko/goutils/middleware"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
 
@@ -37,9 +37,13 @@ func New(c *config.Config, l *zerolog.Logger) *App {
 
 // Run method
 func (a *App) Run() {
+
 	a.logInfo("application is starting up...")
 
-	if err := a.initDB(); err != nil {
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	if err := a.initDB(ctx); err != nil {
 		a.logFatal(err)
 	}
 
@@ -49,14 +53,14 @@ func (a *App) Run() {
 
 	a.initServer()
 
-	if err := a.serve(); err != nil {
+	if err := a.serve(ctx); err != nil {
 		a.logFatal(err)
 	}
 
 	a.logInfo("application is shut down")
 }
 
-func (a *App) initDB() error {
+func (a *App) initDB(ctx context.Context) error {
 
 	db, err := sql.Open("pgx", a.config.DBConnectionString)
 	if err != nil {
@@ -68,7 +72,7 @@ func (a *App) initDB() error {
 	db.SetConnMaxLifetime(10 * time.Minute)
 	db.SetConnMaxIdleTime(5 * time.Minute)
 
-	if err := db.Ping(); err != nil {
+	if err := db.PingContext(ctx); err != nil {
 		return err
 	}
 
@@ -94,6 +98,18 @@ func (a *App) initRouter() {
 	a.router = router
 }
 
+func (a *App) registerRoutes() {
+
+	c := products.NewController(a.config, a.logger, a.db)
+
+	a.router.HandleFunc("/products", c.GetProducts).Methods(http.MethodGet)
+	a.router.HandleFunc("/products", c.CreateProduct).Methods(http.MethodPost)
+	a.router.HandleFunc("/products/{id:[0-9]+}", c.GetProduct).Methods(http.MethodGet)
+	a.router.HandleFunc("/products/{id:[0-9]+}", c.UpdateProduct).Methods(http.MethodPut)
+	a.router.HandleFunc("/products/{id:[0-9]+}", c.DeleteProduct).Methods(http.MethodDelete)
+	a.router.HandleFunc("/products/pricerange", c.GetPriceRange).Methods(http.MethodGet)
+}
+
 func (a *App) initServer() {
 
 	var handler http.Handler = a.router
@@ -113,29 +129,14 @@ func (a *App) initServer() {
 	a.server = server
 }
 
-func (a *App) registerRoutes() {
-
-	c := products.NewController(a.config, a.logger, a.db)
-
-	a.router.HandleFunc("/products", c.GetProducts).Methods(http.MethodGet)
-	a.router.HandleFunc("/products", c.CreateProduct).Methods(http.MethodPost)
-	a.router.HandleFunc("/products/{id:[0-9]+}", c.GetProduct).Methods(http.MethodGet)
-	a.router.HandleFunc("/products/{id:[0-9]+}", c.UpdateProduct).Methods(http.MethodPut)
-	a.router.HandleFunc("/products/{id:[0-9]+}", c.DeleteProduct).Methods(http.MethodDelete)
-	a.router.HandleFunc("/products/pricerange", c.GetPriceRange).Methods(http.MethodGet)
-}
-
-func (a *App) serve() error {
+func (a *App) serve(ctx context.Context) error {
 
 	var (
-		s = make(chan os.Signal)
 		e = make(chan error)
 	)
 
 	go func() {
-		signal.Notify(s, os.Interrupt, syscall.SIGTERM)
-
-		<-s
+		<-ctx.Done()
 
 		a.logInfo("application is shutting down...")
 

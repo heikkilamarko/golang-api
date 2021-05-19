@@ -18,6 +18,9 @@ type Controller struct {
 
 // NewController func
 func NewController(config *config.Config, logger *zerolog.Logger, db *sql.DB) *Controller {
-	repository := newRepository(db, logger)
-	return &Controller{config, logger, db, repository}
+	return &Controller{config, logger, db, &repository{db}}
+}
+
+func (c *Controller) logError(err error) {
+	c.logger.Error().Err(err).Send()
 }

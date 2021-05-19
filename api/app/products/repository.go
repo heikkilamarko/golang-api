@@ -4,23 +4,13 @@ import (
 	"context"
 	"database/sql"
 	_ "embed"
+	"products-api/app/utils"
 	"time"
-
-	"github.com/heikkilamarko/goutils"
-	"github.com/rs/zerolog"
 )
 
 type repository struct {
-	db     *sql.DB
-	logger *zerolog.Logger
+	db *sql.DB
 }
-
-func newRepository(db *sql.DB, l *zerolog.Logger) *repository {
-	return &repository{db, l}
-}
-
-//go:embed sql/get_products.sql
-var qetProductsSQL string
 
 func (r *repository) getProducts(ctx context.Context, query *getProductsQuery) ([]*product, error) {
 	rows, err := r.db.QueryContext(
@@ -29,8 +19,7 @@ func (r *repository) getProducts(ctx context.Context, query *getProductsQuery) (
 		query.Limit, query.Offset)
 
 	if err != nil {
-		r.logger.Err(err).Send()
-		return nil, goutils.ErrInternalError
+		return nil, err
 	}
 
 	defer rows.Close()
@@ -51,8 +40,7 @@ func (r *repository) getProducts(ctx context.Context, query *getProductsQuery) (
 		)
 
 		if err != nil {
-			r.logger.Err(err).Send()
-			return nil, goutils.ErrInternalError
+			return nil, err
 		}
 
 		products = append(products, p)
@@ -60,9 +48,6 @@ func (r *repository) getProducts(ctx context.Context, query *getProductsQuery) (
 
 	return products, nil
 }
-
-//go:embed sql/get_product.sql
-var qetProductSQL string
 
 func (r *repository) getProduct(ctx context.Context, query *getProductQuery) (*product, error) {
 	p := &product{}
@@ -78,20 +63,16 @@ func (r *repository) getProduct(ctx context.Context, query *getProductQuery) (*p
 	)
 
 	if err != nil {
-		r.logger.Err(err).Send()
 		switch err {
 		case sql.ErrNoRows:
-			return nil, goutils.ErrNotFound
+			return nil, utils.ErrNotFound
 		default:
-			return nil, goutils.ErrInternalError
+			return nil, err
 		}
 	}
 
 	return p, nil
 }
-
-//go:embed sql/create_product.sql
-var createProductSQL string
 
 func (r *repository) createProduct(ctx context.Context, command *createProductCommand) error {
 	p := command.Product
@@ -107,15 +88,11 @@ func (r *repository) createProduct(ctx context.Context, command *createProductCo
 		Scan(&p.ID)
 
 	if err != nil {
-		r.logger.Err(err).Send()
-		return goutils.ErrInternalError
+		return err
 	}
 
 	return nil
 }
-
-//go:embed sql/update_product.sql
-var updateProductSQL string
 
 func (r *repository) updateProduct(ctx context.Context, command *updateProductCommand) error {
 	p := command.Product
@@ -134,19 +111,17 @@ func (r *repository) updateProduct(ctx context.Context, command *updateProductCo
 	)
 
 	if err != nil {
-		r.logger.Err(err).Send()
-		return goutils.ErrInternalError
+		return err
 	}
 
 	count, err := result.RowsAffected()
 
 	if err != nil {
-		r.logger.Err(err).Send()
-		return goutils.ErrInternalError
+		return err
 	}
 
 	if count < 1 {
-		return goutils.ErrNotFound
+		return utils.ErrNotFound
 	}
 
 	err = r.db.QueryRowContext(ctx, qetProductSQL, p.ID).Scan(
@@ -160,40 +135,31 @@ func (r *repository) updateProduct(ctx context.Context, command *updateProductCo
 	)
 
 	if err != nil {
-		r.logger.Err(err).Send()
-		return goutils.ErrInternalError
+		return err
 	}
 
 	return nil
 }
-
-//go:embed sql/delete_product.sql
-var deleteProductSQL string
 
 func (r *repository) deleteProduct(ctx context.Context, command *deleteProductCommand) error {
 	result, err := r.db.ExecContext(ctx, deleteProductSQL, command.ID)
 
 	if err != nil {
-		r.logger.Err(err).Send()
-		return goutils.ErrInternalError
+		return err
 	}
 
 	count, err := result.RowsAffected()
 
 	if err != nil {
-		r.logger.Err(err).Send()
-		return goutils.ErrInternalError
+		return err
 	}
 
 	if count < 1 {
-		return goutils.ErrNotFound
+		return utils.ErrNotFound
 	}
 
 	return nil
 }
-
-//go:embed sql/get_price_range.sql
-var getPriceRangeSQL string
 
 func (r *repository) getPriceRange(ctx context.Context) (*priceRange, error) {
 	pr := &priceRange{}
@@ -204,8 +170,7 @@ func (r *repository) getPriceRange(ctx context.Context) (*priceRange, error) {
 	)
 
 	if err != nil {
-		r.logger.Err(err).Send()
-		return nil, goutils.ErrInternalError
+		return nil, err
 	}
 
 	return pr, nil

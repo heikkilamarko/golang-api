@@ -1,7 +1,23 @@
 package products
 
 import (
+	_ "embed"
 	"time"
+)
+
+var (
+	//go:embed sql/get_products.sql
+	qetProductsSQL string
+	//go:embed sql/get_product.sql
+	qetProductSQL string
+	//go:embed sql/create_product.sql
+	createProductSQL string
+	//go:embed sql/update_product.sql
+	updateProductSQL string
+	//go:embed sql/delete_product.sql
+	deleteProductSQL string
+	//go:embed sql/get_price_range.sql
+	getPriceRangeSQL string
 )
 
 type product struct {
