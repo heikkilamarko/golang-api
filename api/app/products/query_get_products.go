@@ -30,10 +30,10 @@ func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
 func parseGetProductsRequest(r *http.Request) (*getProductsQuery, error) {
 	errorMap := map[string]string{}
 
-	var offset int = 0
-	var limit int = utils.LimitMaxPageSize
+	offset := 0
+	limit := utils.LimitMaxPageSize
 
-	var err error = nil
+	var err error
 
 	if value := r.FormValue(utils.FieldPaginationOffset); value != "" {
 		offset, err = strconv.Atoi(value)

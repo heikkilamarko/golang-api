@@ -24,7 +24,7 @@ func (r *repository) getProducts(ctx context.Context, query *getProductsQuery) (
 
 	defer rows.Close()
 
-	products := []*product{}
+	var products []*product
 
 	for rows.Next() {
 		p := &product{}
