@@ -1,0 +1,16 @@
+{
+  "id": "${RATE_LIMITING_PLUGIN_ID}",
+  "name": "rate-limiting",
+  "service": {
+    "id": "${SERVICE_ID}"
+  },
+  "consumer": {
+    "id": "${CONSUMER_ID}"
+  },
+  "config": {
+    "minute": 60,
+    "limit_by": "consumer",
+    "policy": "local"
+  },
+  "protocols": ["http"]
+}

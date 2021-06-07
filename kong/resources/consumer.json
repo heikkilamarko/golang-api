@@ -1,0 +1,5 @@
+{
+  "id": "${CONSUMER_ID}",
+  "username": "products",
+  "custom_id": "products"
+}

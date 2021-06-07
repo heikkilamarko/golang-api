@@ -13,43 +13,10 @@
 ## Build and Run
 
 ```bash
-# Build and run
 > docker compose up --build
 ```
 
-## Configure Kong Gateway
-
-### _Option 1:_ curl
-
-> Included in `docker-compose.yml`
-
-```bash
-# Navigate to the kong/curl directory
-> cd kong/curl
-# Run the configuration script
-> ./configure_kong.sh
-```
-
-### _Option 2:_ postman/newman
-
-```bash
-# Navigate to the kong/postman directory
-> cd kong/postman
-# Run the configuration script
-> ./configure_kong.sh
-```
-
-### _Option 3:_ Kong Manager
-
-Kong Manager is the visual, browser-based tool for monitoring and managing Kong Gateway.
-
-Kong Manager URL: http://localhost:8002
-
-### _Option 4:_ DB-less and Declarative Configuration
-
-[Kong Docs](https://docs.konghq.com/gateway-oss/2.4.x/db-less-and-declarative-config/)
-
-See `kong/declarative/kong.yml`
+Kong Manager: http://localhost:8002
 
 ## Run Postman Tests
 

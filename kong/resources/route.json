@@ -1,0 +1,9 @@
+{
+  "id": "${ROUTE_ID}",
+  "name": "products",
+  "protocols": ["http"],
+  "paths": ["/"],
+  "service": {
+    "id": "${SERVICE_ID}"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "id": "${SERVICE_ID}",
+  "name": "products",
+  "protocol": "http",
+  "host": "api",
+  "port": 8080
+}

@@ -70,7 +70,7 @@ services:
       - db
 
   kong-configure:
-    build: ./kong/curl
+    build: ./kong
     image: kong-configure
     restart: on-failure
     env_file:
