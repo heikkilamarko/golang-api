@@ -32,5 +32,5 @@ Kong Manager: http://localhost:8002
 # Navigate to the test directory
 > cd test
 # Run all tests
-> ./run_tests.sh
+> ./run_tests.sh <apikey>
 ```
