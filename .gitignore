@@ -26,3 +26,5 @@ kong/postman/results
 test/results
 
 .idea
+
+env

@@ -10,7 +10,15 @@
 - [Postman](https://www.postman.com/) & [Newman](https://www.npmjs.com/package/newman)
 - [Docker](https://www.docker.com/)
 
+## Secrets Management
+
+This repository uses [SOPS](https://github.com/mozilla/sops) with [age](https://github.com/mozilla/sops#encrypting-using-age) for managing secrets.
+
+See [secrets](secrets/) for details.
+
 ## Build and Run
+
+Before running the below command, make sure you have the unencrypted secrets in the `/env` directory. See [secrets](secrets/) for details.
 
 ```bash
 > docker compose up --build
