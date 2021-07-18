@@ -10,7 +10,7 @@ This repository uses [SOPS](https://github.com/mozilla/sops) with [age](https://
 
 1. Install [SOPS](https://github.com/mozilla/sops).
 2. Copy the `keys.txt` file to the [correct location](https://github.com/mozilla/sops#22encrypting-using-age) on your computer.
-3. Create `/env` directory into the root of the repository. Secrets will be decrypted to this directory.
+3. Create `env` directory into the root of the repository. Secrets will be decrypted to this directory.
 
 ```bash
 > mkdir ../env
@@ -19,7 +19,7 @@ This repository uses [SOPS](https://github.com/mozilla/sops) with [age](https://
 4. Decrypt the secrets by running the following command.
 
 ```bash
-> ./decrypt_env.sh env.enc ../env
+> ./decrypt_secrets.sh dev ../env
 ```
 
 ## Tips
