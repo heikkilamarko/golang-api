@@ -8,12 +8,13 @@ import (
 	"os"
 	"os/signal"
 	"products-api/app/config"
-	"products-api/app/middleware"
 	"products-api/app/products"
 	"syscall"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/heikkilamarko/goutils"
+	"github.com/heikkilamarko/goutils/middleware"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
 
@@ -32,7 +33,6 @@ type App struct {
 
 // Run method
 func (a *App) Run() {
-
 	a.loadConfig()
 	a.initLogger()
 
@@ -63,7 +63,6 @@ func (a *App) loadConfig() {
 }
 
 func (a *App) initLogger() {
-
 	level, err := zerolog.ParseLevel(a.config.LogLevel)
 	if err != nil {
 		level = zerolog.WarnLevel
@@ -81,7 +80,6 @@ func (a *App) initLogger() {
 }
 
 func (a *App) initDB(ctx context.Context) error {
-
 	db, err := sql.Open("pgx", a.config.DBConnectionString)
 	if err != nil {
 		return err
@@ -102,7 +100,6 @@ func (a *App) initDB(ctx context.Context) error {
 }
 
 func (a *App) initRouter() {
-
 	router := mux.NewRouter()
 
 	router.Use(
@@ -112,13 +109,12 @@ func (a *App) initRouter() {
 		middleware.APIKey(a.config.APIKey, a.config.APIKeyHeader),
 	)
 
-	router.NotFoundHandler = http.HandlerFunc(middleware.NotFoundHandler)
+	router.NotFoundHandler = goutils.NotFoundHandler()
 
 	a.router = router
 }
 
 func (a *App) registerRoutes() {
-
 	c := products.NewController(a.config, a.logger, a.db)
 
 	a.router.HandleFunc("/products", c.GetProducts).Methods(http.MethodGet)
@@ -130,7 +126,6 @@ func (a *App) registerRoutes() {
 }
 
 func (a *App) initServer() {
-
 	var handler http.Handler = a.router
 
 	if a.config.CORSEnabled {
@@ -149,7 +144,6 @@ func (a *App) initServer() {
 }
 
 func (a *App) serve(ctx context.Context) error {
-
 	errChan := make(chan error)
 
 	go func() {

@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/heikkilamarko/goutils"
 )
 
 // DeleteProduct command
@@ -14,7 +15,7 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		c.logError(err)
-		utils.WriteValidationError(w, err)
+		goutils.WriteValidationError(w, err)
 		return
 	}
 
@@ -22,14 +23,14 @@ func (c *Controller) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		c.logError(err)
 		switch err {
 		case utils.ErrNotFound:
-			utils.WriteNotFound(w, nil)
+			goutils.WriteNotFound(w, nil)
 		default:
-			utils.WriteInternalError(w, nil)
+			goutils.WriteInternalError(w, nil)
 		}
 		return
 	}
 
-	utils.WriteNoContent(w)
+	goutils.WriteNoContent(w)
 }
 
 func parseDeleteProductRequest(r *http.Request) (*deleteProductCommand, error) {
@@ -41,7 +42,7 @@ func parseDeleteProductRequest(r *http.Request) (*deleteProductCommand, error) {
 	}
 
 	if 0 < len(errorMap) {
-		return nil, utils.NewValidationError(errorMap)
+		return nil, goutils.NewValidationError(errorMap)
 	}
 
 	return &deleteProductCommand{id}, nil

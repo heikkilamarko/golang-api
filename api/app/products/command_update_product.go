@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/heikkilamarko/goutils"
 )
 
 // UpdateProduct command
@@ -15,7 +16,7 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		c.logError(err)
-		utils.WriteValidationError(w, err)
+		goutils.WriteValidationError(w, err)
 		return
 	}
 
@@ -23,14 +24,14 @@ func (c *Controller) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		c.logError(err)
 		switch err {
 		case utils.ErrNotFound:
-			utils.WriteNotFound(w, nil)
+			goutils.WriteNotFound(w, nil)
 		default:
-			utils.WriteInternalError(w, nil)
+			goutils.WriteInternalError(w, nil)
 		}
 		return
 	}
 
-	utils.WriteOK(w, command.Product, nil)
+	goutils.WriteOK(w, command.Product, nil)
 }
 
 func parseUpdateProductRequest(r *http.Request) (*updateProductCommand, error) {
@@ -47,7 +48,7 @@ func parseUpdateProductRequest(r *http.Request) (*updateProductCommand, error) {
 	}
 
 	if 0 < len(errorMap) {
-		return nil, utils.NewValidationError(errorMap)
+		return nil, goutils.NewValidationError(errorMap)
 	}
 
 	if id != product.ID {
@@ -55,7 +56,7 @@ func parseUpdateProductRequest(r *http.Request) (*updateProductCommand, error) {
 	}
 
 	if 0 < len(errorMap) {
-		return nil, utils.NewValidationError(errorMap)
+		return nil, goutils.NewValidationError(errorMap)
 	}
 
 	return &updateProductCommand{product}, nil

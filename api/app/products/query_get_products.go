@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"products-api/app/utils"
 	"strconv"
+
+	"github.com/heikkilamarko/goutils"
 )
 
 // GetProducts query
@@ -12,7 +14,7 @@ func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		c.logError(err)
-		utils.WriteValidationError(w, err)
+		goutils.WriteValidationError(w, err)
 		return
 	}
 
@@ -20,11 +22,11 @@ func (c *Controller) GetProducts(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		c.logError(err)
-		utils.WriteInternalError(w, nil)
+		goutils.WriteInternalError(w, nil)
 		return
 	}
 
-	utils.WriteOK(w, products, query)
+	goutils.WriteOK(w, products, query)
 }
 
 func parseGetProductsRequest(r *http.Request) (*getProductsQuery, error) {
@@ -50,7 +52,7 @@ func parseGetProductsRequest(r *http.Request) (*getProductsQuery, error) {
 	}
 
 	if 0 < len(errorMap) {
-		return nil, utils.NewValidationError(errorMap)
+		return nil, goutils.NewValidationError(errorMap)
 	}
 
 	return &getProductsQuery{offset, limit}, nil

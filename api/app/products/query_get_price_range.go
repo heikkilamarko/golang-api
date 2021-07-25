@@ -2,7 +2,8 @@ package products
 
 import (
 	"net/http"
-	"products-api/app/utils"
+
+	"github.com/heikkilamarko/goutils"
 )
 
 // GetPriceRange query
@@ -11,9 +12,9 @@ func (c *Controller) GetPriceRange(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		c.logError(err)
-		utils.WriteInternalError(w, nil)
+		goutils.WriteInternalError(w, nil)
 		return
 	}
 
-	utils.WriteOK(w, pr, nil)
+	goutils.WriteOK(w, pr, nil)
 }
