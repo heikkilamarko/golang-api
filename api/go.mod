@@ -1,4 +1,4 @@
-module products-api
+module product-api
 
 go 1.16
 

@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Products API
+  title: Product API
   description: |
     Implements the following CRUD operations:
     - Browse products
