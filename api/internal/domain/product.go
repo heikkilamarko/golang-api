@@ -16,8 +16,3 @@ type PriceRange struct {
 	MinPrice float64 `json:"min_price"`
 	MaxPrice float64 `json:"max_price"`
 }
-
-type GetProductsQuery struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
-}

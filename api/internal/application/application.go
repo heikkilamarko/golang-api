@@ -1,11 +1,11 @@
-package app
+package application
 
 import (
-	"product-api/internal/app/command"
-	"product-api/internal/app/query"
+	"product-api/internal/application/command"
+	"product-api/internal/application/query"
 )
 
-type App struct {
+type Application struct {
 	Commands Commands
 	Queries  Queries
 }

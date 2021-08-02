@@ -7,9 +7,9 @@ import (
 	"os"
 	"os/signal"
 	"product-api/internal/adapters"
-	"product-api/internal/app"
-	"product-api/internal/app/command"
-	"product-api/internal/app/query"
+	"product-api/internal/application"
+	"product-api/internal/application/command"
+	"product-api/internal/application/query"
 	"syscall"
 	"time"
 
@@ -37,7 +37,7 @@ type Service struct {
 	config *config
 	logger *zerolog.Logger
 	db     *sql.DB
-	app    *app.App
+	app    *application.Application
 	server *http.Server
 }
 
@@ -54,7 +54,7 @@ func (s *Service) Run() {
 		s.logFatal(err)
 	}
 
-	s.initApp()
+	s.initApplication()
 	s.initHTTPServer()
 
 	if err := s.serve(ctx); err != nil {
@@ -113,16 +113,16 @@ func (s *Service) initDB(ctx context.Context) error {
 	return nil
 }
 
-func (s *Service) initApp() {
-	productRepository := adapters.NewProductRepository(s.db)
+func (s *Service) initApplication() {
+	productRepository := adapters.NewProductPostgresRepository(s.db)
 
-	s.app = &app.App{
-		Commands: app.Commands{
+	s.app = &application.Application{
+		Commands: application.Commands{
 			CreateProduct: command.NewCreateProductHandler(productRepository),
 			UpdateProduct: command.NewUpdateProductHandler(productRepository),
 			DeleteProduct: command.NewDeleteProductHandler(productRepository),
 		},
-		Queries: app.Queries{
+		Queries: application.Queries{
 			GetProducts:   query.NewGetProductsHandler(productRepository),
 			GetProduct:    query.NewGetProductHandler(productRepository),
 			GetPriceRange: query.NewGetPriceRangeHandler(productRepository),
@@ -142,7 +142,14 @@ func (s *Service) initHTTPServer() {
 
 	router.NotFoundHandler = goutils.NotFoundHandler()
 
-	adapters.NewProductAPIController(s.app, s.logger).RegisterRoutes(router)
+	productHandlers := adapters.NewProductHTTPHandlers(s.app, s.logger)
+
+	router.HandleFunc("/products", productHandlers.GetProducts).Methods(http.MethodGet)
+	router.HandleFunc("/products", productHandlers.CreateProduct).Methods(http.MethodPost)
+	router.HandleFunc("/products/{id:[0-9]+}", productHandlers.GetProduct).Methods(http.MethodGet)
+	router.HandleFunc("/products/{id:[0-9]+}", productHandlers.UpdateProduct).Methods(http.MethodPut)
+	router.HandleFunc("/products/{id:[0-9]+}", productHandlers.DeleteProduct).Methods(http.MethodDelete)
+	router.HandleFunc("/products/pricerange", productHandlers.GetPriceRange).Methods(http.MethodGet)
 
 	var handler http.Handler = router
 

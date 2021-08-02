@@ -3,13 +3,14 @@ package query
 import (
 	"context"
 	"product-api/internal/domain"
+	"product-api/internal/ports"
 )
 
 type GetPriceRangeHandler struct {
-	r domain.ProductRepository
+	r ports.ProductRepository
 }
 
-func NewGetPriceRangeHandler(r domain.ProductRepository) *GetPriceRangeHandler {
+func NewGetPriceRangeHandler(r ports.ProductRepository) *GetPriceRangeHandler {
 	return &GetPriceRangeHandler{r}
 }
 

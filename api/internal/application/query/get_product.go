@@ -3,6 +3,7 @@ package query
 import (
 	"context"
 	"product-api/internal/domain"
+	"product-api/internal/ports"
 )
 
 type GetProduct struct {
@@ -10,10 +11,10 @@ type GetProduct struct {
 }
 
 type GetProductHandler struct {
-	r domain.ProductRepository
+	r ports.ProductRepository
 }
 
-func NewGetProductHandler(r domain.ProductRepository) *GetProductHandler {
+func NewGetProductHandler(r ports.ProductRepository) *GetProductHandler {
 	return &GetProductHandler{r}
 }
 

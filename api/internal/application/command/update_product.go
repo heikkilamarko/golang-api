@@ -3,6 +3,7 @@ package command
 import (
 	"context"
 	"product-api/internal/domain"
+	"product-api/internal/ports"
 )
 
 type UpdateProduct struct {
@@ -10,10 +11,10 @@ type UpdateProduct struct {
 }
 
 type UpdateProductHandler struct {
-	r domain.ProductRepository
+	r ports.ProductRepository
 }
 
-func NewUpdateProductHandler(r domain.ProductRepository) *UpdateProductHandler {
+func NewUpdateProductHandler(r ports.ProductRepository) *UpdateProductHandler {
 	return &UpdateProductHandler{r}
 }
 

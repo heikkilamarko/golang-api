@@ -3,10 +3,11 @@ package adapters
 import (
 	"encoding/json"
 	"net/http"
-	"product-api/internal/app"
-	"product-api/internal/app/command"
-	"product-api/internal/app/query"
+	"product-api/internal/application"
+	"product-api/internal/application/command"
+	"product-api/internal/application/query"
 	"product-api/internal/domain"
+	"product-api/internal/ports"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -32,27 +33,18 @@ const (
 	limitMaxPageSize = 100
 )
 
-type ProductAPIController struct {
-	app    *app.App
+type ProductHTTPHandlers struct {
+	app    *application.Application
 	logger *zerolog.Logger
 }
 
-func NewProductAPIController(app *app.App, logger *zerolog.Logger) *ProductAPIController {
-	return &ProductAPIController{app, logger}
-}
-
-func (c *ProductAPIController) RegisterRoutes(r *mux.Router) {
-	r.HandleFunc("/products", c.getProducts).Methods(http.MethodGet)
-	r.HandleFunc("/products", c.createProduct).Methods(http.MethodPost)
-	r.HandleFunc("/products/{id:[0-9]+}", c.getProduct).Methods(http.MethodGet)
-	r.HandleFunc("/products/{id:[0-9]+}", c.updateProduct).Methods(http.MethodPut)
-	r.HandleFunc("/products/{id:[0-9]+}", c.deleteProduct).Methods(http.MethodDelete)
-	r.HandleFunc("/products/pricerange", c.getPriceRange).Methods(http.MethodGet)
+func NewProductHTTPHandlers(app *application.Application, logger *zerolog.Logger) *ProductHTTPHandlers {
+	return &ProductHTTPHandlers{app, logger}
 }
 
 // Handlers
 
-func (c *ProductAPIController) getProducts(w http.ResponseWriter, r *http.Request) {
+func (c *ProductHTTPHandlers) GetProducts(w http.ResponseWriter, r *http.Request) {
 	query, err := parseGetProductsQuery(r)
 
 	if err != nil {
@@ -72,7 +64,7 @@ func (c *ProductAPIController) getProducts(w http.ResponseWriter, r *http.Reques
 	goutils.WriteOK(w, todos, query)
 }
 
-func (c *ProductAPIController) createProduct(w http.ResponseWriter, r *http.Request) {
+func (c *ProductHTTPHandlers) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	command, err := parseCreateProductCommand(r)
 
 	if err != nil {
@@ -90,7 +82,7 @@ func (c *ProductAPIController) createProduct(w http.ResponseWriter, r *http.Requ
 	goutils.WriteCreated(w, command.Product, nil)
 }
 
-func (c *ProductAPIController) getProduct(w http.ResponseWriter, r *http.Request) {
+func (c *ProductHTTPHandlers) GetProduct(w http.ResponseWriter, r *http.Request) {
 	query, err := parseGetProductQuery(r)
 
 	if err != nil {
@@ -104,7 +96,7 @@ func (c *ProductAPIController) getProduct(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		c.logError(err)
 		switch err {
-		case domain.ErrNotFound:
+		case ports.ErrNotFound:
 			goutils.WriteNotFound(w, nil)
 		default:
 			goutils.WriteInternalError(w, nil)
@@ -115,7 +107,7 @@ func (c *ProductAPIController) getProduct(w http.ResponseWriter, r *http.Request
 	goutils.WriteOK(w, product, nil)
 }
 
-func (c *ProductAPIController) updateProduct(w http.ResponseWriter, r *http.Request) {
+func (c *ProductHTTPHandlers) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	command, err := parseUpdateProductCommand(r)
 
 	if err != nil {
@@ -127,7 +119,7 @@ func (c *ProductAPIController) updateProduct(w http.ResponseWriter, r *http.Requ
 	if err := c.app.Commands.UpdateProduct.Handle(r.Context(), command); err != nil {
 		c.logError(err)
 		switch err {
-		case domain.ErrNotFound:
+		case ports.ErrNotFound:
 			goutils.WriteNotFound(w, nil)
 		default:
 			goutils.WriteInternalError(w, nil)
@@ -138,7 +130,7 @@ func (c *ProductAPIController) updateProduct(w http.ResponseWriter, r *http.Requ
 	goutils.WriteOK(w, command.Product, nil)
 }
 
-func (c *ProductAPIController) deleteProduct(w http.ResponseWriter, r *http.Request) {
+func (c *ProductHTTPHandlers) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	command, err := parseDeleteProductCommand(r)
 
 	if err != nil {
@@ -150,7 +142,7 @@ func (c *ProductAPIController) deleteProduct(w http.ResponseWriter, r *http.Requ
 	if err := c.app.Commands.DeleteProduct.Handle(r.Context(), command); err != nil {
 		c.logError(err)
 		switch err {
-		case domain.ErrNotFound:
+		case ports.ErrNotFound:
 			goutils.WriteNotFound(w, nil)
 		default:
 			goutils.WriteInternalError(w, nil)
@@ -161,7 +153,7 @@ func (c *ProductAPIController) deleteProduct(w http.ResponseWriter, r *http.Requ
 	goutils.WriteNoContent(w)
 }
 
-func (c *ProductAPIController) getPriceRange(w http.ResponseWriter, r *http.Request) {
+func (c *ProductHTTPHandlers) GetPriceRange(w http.ResponseWriter, r *http.Request) {
 	pr, err := c.app.Queries.GetPriceRange.Handle(r.Context())
 
 	if err != nil {
@@ -282,6 +274,6 @@ func parseDeleteProductCommand(r *http.Request) (*command.DeleteProduct, error) 
 
 // Utils
 
-func (c *ProductAPIController) logError(err error) {
+func (c *ProductHTTPHandlers) logError(err error) {
 	c.logger.Error().Err(err).Send()
 }

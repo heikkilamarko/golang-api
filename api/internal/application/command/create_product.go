@@ -3,6 +3,7 @@ package command
 import (
 	"context"
 	"product-api/internal/domain"
+	"product-api/internal/ports"
 )
 
 type CreateProduct struct {
@@ -10,10 +11,10 @@ type CreateProduct struct {
 }
 
 type CreateProductHandler struct {
-	r domain.ProductRepository
+	r ports.ProductRepository
 }
 
-func NewCreateProductHandler(r domain.ProductRepository) *CreateProductHandler {
+func NewCreateProductHandler(r ports.ProductRepository) *CreateProductHandler {
 	return &CreateProductHandler{r}
 }
 

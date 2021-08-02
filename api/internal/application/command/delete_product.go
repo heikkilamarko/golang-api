@@ -2,7 +2,7 @@ package command
 
 import (
 	"context"
-	"product-api/internal/domain"
+	"product-api/internal/ports"
 )
 
 type DeleteProduct struct {
@@ -10,10 +10,10 @@ type DeleteProduct struct {
 }
 
 type DeleteProductHandler struct {
-	r domain.ProductRepository
+	r ports.ProductRepository
 }
 
-func NewDeleteProductHandler(r domain.ProductRepository) *DeleteProductHandler {
+func NewDeleteProductHandler(r ports.ProductRepository) *DeleteProductHandler {
 	return &DeleteProductHandler{r}
 }
 

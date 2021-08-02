@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"product-api/internal/domain"
+	"product-api/internal/ports"
 	"time"
 )
 
@@ -23,15 +24,15 @@ var (
 	getPriceRangeSQL string
 )
 
-type ProductRepository struct {
+type ProductPostgresRepository struct {
 	db *sql.DB
 }
 
-func NewProductRepository(db *sql.DB) *ProductRepository {
-	return &ProductRepository{db}
+func NewProductPostgresRepository(db *sql.DB) *ProductPostgresRepository {
+	return &ProductPostgresRepository{db}
 }
 
-func (r *ProductRepository) GetProducts(ctx context.Context, query *domain.GetProductsQuery) ([]*domain.Product, error) {
+func (r *ProductPostgresRepository) GetProducts(ctx context.Context, query *ports.GetProductsQuery) ([]*domain.Product, error) {
 	rows, err := r.db.QueryContext(
 		ctx,
 		qetProductsSQL,
@@ -68,7 +69,7 @@ func (r *ProductRepository) GetProducts(ctx context.Context, query *domain.GetPr
 	return products, nil
 }
 
-func (r *ProductRepository) GetProduct(ctx context.Context, id int) (*domain.Product, error) {
+func (r *ProductPostgresRepository) GetProduct(ctx context.Context, id int) (*domain.Product, error) {
 	p := &domain.Product{}
 
 	err := r.db.QueryRowContext(ctx, qetProductSQL, id).Scan(
@@ -84,7 +85,7 @@ func (r *ProductRepository) GetProduct(ctx context.Context, id int) (*domain.Pro
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
-			return nil, domain.ErrNotFound
+			return nil, ports.ErrNotFound
 		default:
 			return nil, err
 		}
@@ -93,7 +94,7 @@ func (r *ProductRepository) GetProduct(ctx context.Context, id int) (*domain.Pro
 	return p, nil
 }
 
-func (r *ProductRepository) CreateProduct(ctx context.Context, p *domain.Product) error {
+func (r *ProductPostgresRepository) CreateProduct(ctx context.Context, p *domain.Product) error {
 	p.CreatedAt = time.Now()
 	p.UpdatedAt = nil
 
@@ -106,7 +107,7 @@ func (r *ProductRepository) CreateProduct(ctx context.Context, p *domain.Product
 		Scan(&p.ID)
 }
 
-func (r *ProductRepository) UpdateProduct(ctx context.Context, p *domain.Product) error {
+func (r *ProductPostgresRepository) UpdateProduct(ctx context.Context, p *domain.Product) error {
 	now := time.Now()
 	p.UpdatedAt = &now
 
@@ -130,7 +131,7 @@ func (r *ProductRepository) UpdateProduct(ctx context.Context, p *domain.Product
 	}
 
 	if count < 1 {
-		return domain.ErrNotFound
+		return ports.ErrNotFound
 	}
 
 	return r.db.QueryRowContext(ctx, qetProductSQL, p.ID).Scan(
@@ -144,7 +145,7 @@ func (r *ProductRepository) UpdateProduct(ctx context.Context, p *domain.Product
 	)
 }
 
-func (r *ProductRepository) DeleteProduct(ctx context.Context, id int) error {
+func (r *ProductPostgresRepository) DeleteProduct(ctx context.Context, id int) error {
 	result, err := r.db.ExecContext(ctx, deleteProductSQL, id)
 
 	if err != nil {
@@ -158,13 +159,13 @@ func (r *ProductRepository) DeleteProduct(ctx context.Context, id int) error {
 	}
 
 	if count < 1 {
-		return domain.ErrNotFound
+		return ports.ErrNotFound
 	}
 
 	return nil
 }
 
-func (r *ProductRepository) GetPriceRange(ctx context.Context) (*domain.PriceRange, error) {
+func (r *ProductPostgresRepository) GetPriceRange(ctx context.Context) (*domain.PriceRange, error) {
 	pr := &domain.PriceRange{}
 
 	err := r.db.QueryRowContext(ctx, getPriceRangeSQL).Scan(
