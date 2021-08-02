@@ -12,7 +12,12 @@ type Product struct {
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
 }
 
-type PriceRange struct {
-	MinPrice float64 `json:"min_price"`
-	MaxPrice float64 `json:"max_price"`
+func (p *Product) SetCreateTimestamps() {
+	p.CreatedAt = time.Now()
+	p.UpdatedAt = nil
+}
+
+func (p *Product) SetUpdateTimestamps() {
+	now := time.Now()
+	p.UpdatedAt = &now
 }

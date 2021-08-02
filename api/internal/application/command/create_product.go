@@ -19,5 +19,6 @@ func NewCreateProductHandler(r ports.ProductRepository) *CreateProductHandler {
 }
 
 func (h *CreateProductHandler) Handle(ctx context.Context, c *CreateProduct) error {
+	c.Product.SetCreateTimestamps()
 	return h.r.CreateProduct(ctx, c.Product)
 }

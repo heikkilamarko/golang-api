@@ -6,7 +6,6 @@ import (
 	_ "embed"
 	"product-api/internal/domain"
 	"product-api/internal/ports"
-	"time"
 )
 
 var (
@@ -95,9 +94,6 @@ func (r *ProductPostgresRepository) GetProduct(ctx context.Context, id int) (*do
 }
 
 func (r *ProductPostgresRepository) CreateProduct(ctx context.Context, p *domain.Product) error {
-	p.CreatedAt = time.Now()
-	p.UpdatedAt = nil
-
 	return r.db.QueryRowContext(ctx, createProductSQL,
 		p.Name,
 		p.Description,
@@ -108,9 +104,6 @@ func (r *ProductPostgresRepository) CreateProduct(ctx context.Context, p *domain
 }
 
 func (r *ProductPostgresRepository) UpdateProduct(ctx context.Context, p *domain.Product) error {
-	now := time.Now()
-	p.UpdatedAt = &now
-
 	result, err := r.db.ExecContext(ctx, updateProductSQL,
 		p.Name,
 		p.Description,

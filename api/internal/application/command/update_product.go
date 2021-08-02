@@ -19,5 +19,6 @@ func NewUpdateProductHandler(r ports.ProductRepository) *UpdateProductHandler {
 }
 
 func (h *UpdateProductHandler) Handle(ctx context.Context, c *UpdateProduct) error {
+	c.Product.SetUpdateTimestamps()
 	return h.r.UpdateProduct(ctx, c.Product)
 }
