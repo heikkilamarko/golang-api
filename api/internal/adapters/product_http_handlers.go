@@ -61,7 +61,12 @@ func (h *ProductHTTPHandlers) GetProducts(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	goutils.WriteOK(w, todos, query)
+	meta := &paginationMeta{
+		Offset: query.Offset,
+		Limit:  query.Limit,
+	}
+
+	goutils.WriteOK(w, todos, meta)
 }
 
 func (h *ProductHTTPHandlers) CreateProduct(w http.ResponseWriter, r *http.Request) {

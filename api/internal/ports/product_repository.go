@@ -6,8 +6,8 @@ import (
 )
 
 type GetProductsQuery struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
+	Offset int
+	Limit  int
 }
 
 type ProductRepository interface {

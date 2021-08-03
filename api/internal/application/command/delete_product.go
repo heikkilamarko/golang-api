@@ -6,7 +6,7 @@ import (
 )
 
 type DeleteProduct struct {
-	ID int `json:"id"`
+	ID int
 }
 
 type DeleteProductHandler struct {

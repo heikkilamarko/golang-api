@@ -24,13 +24,13 @@ import (
 )
 
 type config struct {
-	App                string `json:"app"`
-	Address            string `json:"address"`
-	APIKey             string `json:"api_key"`
-	APIKeyHeader       string `json:"api_key_header"`
-	DBConnectionString string `json:"db_connection_string"`
-	CORSEnabled        bool   `json:"cors_enabled"`
-	LogLevel           string `json:"log_level"`
+	App                string
+	Address            string
+	APIKey             string
+	APIKeyHeader       string
+	DBConnectionString string
+	CORSEnabled        bool
+	LogLevel           string
 }
 
 type Service struct {

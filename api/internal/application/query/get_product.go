@@ -7,7 +7,7 @@ import (
 )
 
 type GetProduct struct {
-	ID int `json:"id"`
+	ID int
 }
 
 type GetProductHandler struct {

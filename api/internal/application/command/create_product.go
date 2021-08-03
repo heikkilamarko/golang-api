@@ -7,7 +7,7 @@ import (
 )
 
 type CreateProduct struct {
-	Product *domain.Product `json:"todo"`
+	Product *domain.Product
 }
 
 type CreateProductHandler struct {

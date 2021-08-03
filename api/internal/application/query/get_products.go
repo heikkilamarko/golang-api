@@ -7,8 +7,8 @@ import (
 )
 
 type GetProducts struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
+	Offset int
+	Limit  int
 }
 
 type GetProductsHandler struct {
