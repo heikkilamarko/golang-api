@@ -45,7 +45,7 @@ func NewProductHTTPHandlers(app *application.Application, logger *zerolog.Logger
 // Handlers
 
 func (h *ProductHTTPHandlers) GetProducts(w http.ResponseWriter, r *http.Request) {
-	query, err := parseGetProductsQuery(r)
+	q, err := parseGetProductsQuery(r)
 
 	if err != nil {
 		h.logError(err)
@@ -53,7 +53,7 @@ func (h *ProductHTTPHandlers) GetProducts(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	todos, err := h.app.Queries.GetProducts.Handle(r.Context(), query)
+	todos, err := h.app.Queries.GetProducts.Handle(r.Context(), q)
 
 	if err != nil {
 		h.logError(err)
@@ -62,15 +62,15 @@ func (h *ProductHTTPHandlers) GetProducts(w http.ResponseWriter, r *http.Request
 	}
 
 	meta := &paginationMeta{
-		Offset: query.Offset,
-		Limit:  query.Limit,
+		Offset: q.Offset,
+		Limit:  q.Limit,
 	}
 
 	goutils.WriteOK(w, todos, meta)
 }
 
 func (h *ProductHTTPHandlers) CreateProduct(w http.ResponseWriter, r *http.Request) {
-	command, err := parseCreateProductCommand(r)
+	c, err := parseCreateProductCommand(r)
 
 	if err != nil {
 		h.logError(err)
@@ -78,17 +78,17 @@ func (h *ProductHTTPHandlers) CreateProduct(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if err := h.app.Commands.CreateProduct.Handle(r.Context(), command); err != nil {
+	if err := h.app.Commands.CreateProduct.Handle(r.Context(), c); err != nil {
 		h.logError(err)
 		goutils.WriteInternalError(w, nil)
 		return
 	}
 
-	goutils.WriteCreated(w, command.Product, nil)
+	goutils.WriteCreated(w, c.Product, nil)
 }
 
 func (h *ProductHTTPHandlers) GetProduct(w http.ResponseWriter, r *http.Request) {
-	query, err := parseGetProductQuery(r)
+	q, err := parseGetProductQuery(r)
 
 	if err != nil {
 		h.logError(err)
@@ -96,7 +96,7 @@ func (h *ProductHTTPHandlers) GetProduct(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	product, err := h.app.Queries.GetProduct.Handle(r.Context(), query)
+	product, err := h.app.Queries.GetProduct.Handle(r.Context(), q)
 
 	if err != nil {
 		h.logError(err)
@@ -113,7 +113,7 @@ func (h *ProductHTTPHandlers) GetProduct(w http.ResponseWriter, r *http.Request)
 }
 
 func (h *ProductHTTPHandlers) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	command, err := parseUpdateProductCommand(r)
+	c, err := parseUpdateProductCommand(r)
 
 	if err != nil {
 		h.logError(err)
@@ -121,7 +121,7 @@ func (h *ProductHTTPHandlers) UpdateProduct(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if err := h.app.Commands.UpdateProduct.Handle(r.Context(), command); err != nil {
+	if err := h.app.Commands.UpdateProduct.Handle(r.Context(), c); err != nil {
 		h.logError(err)
 		switch err {
 		case ports.ErrNotFound:
@@ -132,11 +132,11 @@ func (h *ProductHTTPHandlers) UpdateProduct(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	goutils.WriteOK(w, command.Product, nil)
+	goutils.WriteOK(w, c.Product, nil)
 }
 
 func (h *ProductHTTPHandlers) DeleteProduct(w http.ResponseWriter, r *http.Request) {
-	command, err := parseDeleteProductCommand(r)
+	c, err := parseDeleteProductCommand(r)
 
 	if err != nil {
 		h.logError(err)
@@ -144,7 +144,7 @@ func (h *ProductHTTPHandlers) DeleteProduct(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if err := h.app.Commands.DeleteProduct.Handle(r.Context(), command); err != nil {
+	if err := h.app.Commands.DeleteProduct.Handle(r.Context(), c); err != nil {
 		h.logError(err)
 		switch err {
 		case ports.ErrNotFound:
