@@ -13,13 +13,13 @@ This repository uses [SOPS](https://github.com/mozilla/sops) with [age](https://
 3. Create `env` directory into the root of the repository. Secrets will be decrypted to this directory.
 
 ```bash
-> mkdir ../env
+mkdir ../env
 ```
 
 4. Decrypt the secrets by running the following command.
 
 ```bash
-> ./decrypt_secrets.sh dev ../env
+./decrypt_secrets.sh dev ../env
 ```
 
 ## Tips

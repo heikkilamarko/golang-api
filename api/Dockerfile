@@ -6,6 +6,6 @@ ENV GOOS=linux
 ENV GOARCH=amd64
 RUN go build -trimpath -a -ldflags="-w -s" ./cmd/product-api
 
-FROM scratch
+FROM gcr.io/distroless/static
 COPY --from=build /go/product-api /product-api
 ENTRYPOINT ["/product-api"]

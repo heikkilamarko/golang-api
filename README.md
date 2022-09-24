@@ -14,14 +14,14 @@
 
 This repository uses [SOPS](https://github.com/mozilla/sops) with [age](https://github.com/mozilla/sops#encrypting-using-age) for managing secrets.
 
-See [secrets](secrets/) for details.
+See [config](config/) for details.
 
 ## Build and Run
 
-Before running the below command, make sure you have the unencrypted secrets in the `env` directory. See [secrets](secrets/) for details.
+Before running the below command, make sure you have the unencrypted secrets in the `env` directory. See [config](config/) for details.
 
 ```bash
-> docker compose up --build -d
+docker compose up --build -d
 ```
 
 Kong Manager: http://localhost:8002
@@ -29,8 +29,9 @@ Kong Manager: http://localhost:8002
 ## Run Postman Tests
 
 ```bash
-# Navigate to the test directory
-> cd test
-# Run tests
-> ./run_tests.sh
+cd test
+```
+
+```bash
+./run_tests.sh
 ```
