@@ -10,7 +10,7 @@ import (
 	"product-api/internal/ports"
 	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 	"github.com/heikkilamarko/goutils"
 	"github.com/rs/zerolog"
 )
@@ -228,7 +228,7 @@ func parseCreateProductCommand(r *http.Request) (*command.CreateProduct, error) 
 func parseGetProductQuery(r *http.Request) (*query.GetProduct, error) {
 	errorMap := map[string]string{}
 
-	id, err := strconv.Atoi(mux.Vars(r)[fieldID])
+	id, err := strconv.Atoi(chi.URLParam(r, fieldID))
 	if err != nil {
 		errorMap[fieldID] = errCodeInvalidID
 	}
@@ -243,7 +243,7 @@ func parseGetProductQuery(r *http.Request) (*query.GetProduct, error) {
 func parseUpdateProductCommand(r *http.Request) (*command.UpdateProduct, error) {
 	errorMap := map[string]string{}
 
-	id, err := strconv.Atoi(mux.Vars(r)[fieldID])
+	id, err := strconv.Atoi(chi.URLParam(r, fieldID))
 	if err != nil {
 		errorMap[fieldID] = errCodeInvalidID
 	}
@@ -271,7 +271,7 @@ func parseUpdateProductCommand(r *http.Request) (*command.UpdateProduct, error) 
 func parseDeleteProductCommand(r *http.Request) (*command.DeleteProduct, error) {
 	errorMap := map[string]string{}
 
-	id, err := strconv.Atoi(mux.Vars(r)[fieldID])
+	id, err := strconv.Atoi(chi.URLParam(r, fieldID))
 	if err != nil {
 		errorMap[fieldID] = errCodeInvalidID
 	}

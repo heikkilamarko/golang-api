@@ -13,9 +13,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gorilla/mux"
-	"github.com/heikkilamarko/goutils"
-	"github.com/heikkilamarko/goutils/middleware"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
 
@@ -131,25 +130,23 @@ func (s *Service) initApplication() {
 }
 
 func (s *Service) initHTTPServer() {
-	router := mux.NewRouter()
+	router := chi.NewRouter()
 
 	router.Use(
-		middleware.Logger(s.logger),
-		middleware.RequestLogger(),
-		middleware.ErrorRecovery(),
-		middleware.APIKey(s.config.APIKey, s.config.APIKeyHeader),
+		middleware.Recoverer,
+		adapters.APIKey(s.config.APIKey, s.config.APIKeyHeader),
 	)
-
-	router.NotFoundHandler = goutils.NotFoundHandler()
 
 	productHandlers := adapters.NewProductHTTPHandlers(s.app, s.logger)
 
-	router.HandleFunc("/products", productHandlers.GetProducts).Methods(http.MethodGet)
-	router.HandleFunc("/products", productHandlers.CreateProduct).Methods(http.MethodPost)
-	router.HandleFunc("/products/{id:[0-9]+}", productHandlers.GetProduct).Methods(http.MethodGet)
-	router.HandleFunc("/products/{id:[0-9]+}", productHandlers.UpdateProduct).Methods(http.MethodPut)
-	router.HandleFunc("/products/{id:[0-9]+}", productHandlers.DeleteProduct).Methods(http.MethodDelete)
-	router.HandleFunc("/products/pricerange", productHandlers.GetPriceRange).Methods(http.MethodGet)
+	router.MethodFunc(http.MethodGet, "/products", productHandlers.GetProducts)
+	router.MethodFunc(http.MethodPost, "/products", productHandlers.CreateProduct)
+	router.MethodFunc(http.MethodGet, "/products/{id:[0-9]+}", productHandlers.GetProduct)
+	router.MethodFunc(http.MethodPut, "/products/{id:[0-9]+}", productHandlers.UpdateProduct)
+	router.MethodFunc(http.MethodDelete, "/products/{id:[0-9]+}", productHandlers.DeleteProduct)
+	router.MethodFunc(http.MethodGet, "/products/pricerange", productHandlers.GetPriceRange)
+
+	router.NotFound(adapters.NotFound)
 
 	var handler http.Handler = router
 
