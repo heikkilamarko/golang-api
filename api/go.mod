@@ -4,9 +4,9 @@ go 1.19
 
 require (
 	github.com/go-chi/chi/v5 v5.0.8
-	github.com/heikkilamarko/goutils v1.0.26
+	github.com/go-chi/cors v1.2.1
+	github.com/heikkilamarko/goutils v1.0.27
 	github.com/jackc/pgx/v4 v4.17.2
-	github.com/rs/cors v1.8.2
 	github.com/rs/zerolog v1.28.0
 )
 
@@ -21,6 +21,6 @@ require (
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
-	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6 // indirect
+	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/text v0.3.7 // indirect
 )

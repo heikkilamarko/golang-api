@@ -14,7 +14,7 @@ info:
     name: Contact
     email: example@example.com
 servers:
-  - url: "http://localhost:8000"
+  - url: "http://localhost:8080"
     description: localhost
 security:
   - ApiKeyAuth: []

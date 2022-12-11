@@ -15,7 +15,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/rs/cors"
+	"github.com/go-chi/cors"
 	"github.com/rs/zerolog"
 
 	// PostgreSQL driver
@@ -132,34 +132,43 @@ func (s *Service) initApplication() {
 func (s *Service) initHTTPServer() {
 	router := chi.NewRouter()
 
-	router.Use(
-		middleware.Recoverer,
-		adapters.APIKey(s.config.APIKey, s.config.APIKeyHeader),
-	)
-
-	productHandlers := adapters.NewProductHTTPHandlers(s.app, s.logger)
-
-	router.MethodFunc(http.MethodGet, "/products", productHandlers.GetProducts)
-	router.MethodFunc(http.MethodPost, "/products", productHandlers.CreateProduct)
-	router.MethodFunc(http.MethodGet, "/products/{id:[0-9]+}", productHandlers.GetProduct)
-	router.MethodFunc(http.MethodPut, "/products/{id:[0-9]+}", productHandlers.UpdateProduct)
-	router.MethodFunc(http.MethodDelete, "/products/{id:[0-9]+}", productHandlers.DeleteProduct)
-	router.MethodFunc(http.MethodGet, "/products/pricerange", productHandlers.GetPriceRange)
-
-	router.NotFound(adapters.NotFound)
-
-	var handler http.Handler = router
+	router.Use(middleware.Recoverer)
 
 	if s.config.CORSEnabled {
-		handler = cors.AllowAll().Handler(router)
+		router.Use(cors.Handler(cors.Options{
+			AllowedOrigins: []string{"*"},
+			AllowedMethods: []string{
+				http.MethodOptions,
+				http.MethodGet,
+				http.MethodPost,
+				http.MethodPut,
+				http.MethodDelete,
+			},
+			AllowedHeaders:   []string{"*"},
+			AllowCredentials: false,
+			MaxAge:           300,
+		}))
 	}
+
+	router.Use(adapters.APIKey(s.config.APIKey, s.config.APIKeyHeader))
+
+	h := adapters.NewProductHTTPHandlers(s.app, s.logger)
+
+	router.Get("/products", h.GetProducts)
+	router.Post("/products", h.CreateProduct)
+	router.Get("/products/{id:[0-9]+}", h.GetProduct)
+	router.Put("/products/{id:[0-9]+}", h.UpdateProduct)
+	router.Delete("/products/{id:[0-9]+}", h.DeleteProduct)
+	router.Get("/products/pricerange", h.GetPriceRange)
+
+	router.NotFound(adapters.NotFound)
 
 	s.server = &http.Server{
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
 		Addr:         s.config.Address,
-		Handler:      handler,
+		Handler:      router,
 	}
 }
 
