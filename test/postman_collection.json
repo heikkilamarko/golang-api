@@ -13,6 +13,9 @@
           "listen": "test",
           "script": {
             "exec": [
+              "var Ajv = require(\"ajv\");",
+              "var ajv = new Ajv();",
+              "",
               "pm.test(\"Status code is 401\", function () {",
               "    pm.response.to.have.status(401);",
               "});",
@@ -30,7 +33,7 @@
               "var body = pm.response.json();",
               "",
               "pm.test('Response schema is valid', function() {",
-              "  pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "  pm.expect(ajv.validate(body, schema)).to.be.true;",
               "});"
             ],
             "type": "text/javascript"
@@ -64,6 +67,9 @@
           "listen": "test",
           "script": {
             "exec": [
+              "var Ajv = require(\"ajv\");",
+              "var ajv = new Ajv();",
+              "",
               "pm.test(\"Status code is 200\", function () {",
               "    pm.response.to.have.status(200);",
               "});",
@@ -121,7 +127,7 @@
               "var body = pm.response.json();",
               "",
               "pm.test('Response schema is valid', function () {",
-              "    pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "    pm.expect(ajv.validate(body, schema)).to.be.true;",
               "});"
             ],
             "type": "text/javascript"
@@ -152,6 +158,9 @@
           "listen": "test",
           "script": {
             "exec": [
+              "var Ajv = require(\"ajv\");",
+              "var ajv = new Ajv();",
+              "",
               "pm.test(\"Status code is 201\", function () {",
               "    pm.response.to.have.status(201);",
               "});",
@@ -190,7 +199,7 @@
               "var body = pm.response.json();",
               "",
               "pm.test('Response schema is valid', function () {",
-              "    pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "    pm.expect(ajv.validate(body, schema)).to.be.true;",
               "});",
               "",
               "pm.environment.set(\"created_id\", body.data.id);",
@@ -227,6 +236,9 @@
           "listen": "test",
           "script": {
             "exec": [
+              "var Ajv = require(\"ajv\");",
+              "var ajv = new Ajv();",
+              "",
               "pm.test(\"Status code is 200\", function () {",
               "    pm.response.to.have.status(200);",
               "});",
@@ -265,7 +277,7 @@
               "var body = pm.response.json();",
               "",
               "pm.test('Response schema is valid', function () {",
-              "    pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "    pm.expect(ajv.validate(body, schema)).to.be.true;",
               "});",
               ""
             ],
@@ -291,6 +303,9 @@
           "listen": "test",
           "script": {
             "exec": [
+              "var Ajv = require(\"ajv\");",
+              "var ajv = new Ajv();",
+              "",
               "pm.test(\"Status code is 200\", function () {",
               "    pm.response.to.have.status(200);",
               "});",
@@ -332,7 +347,7 @@
               "var body = pm.response.json();",
               "",
               "pm.test('Response schema is valid', function () {",
-              "    pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "    pm.expect(ajv.validate(body, schema)).to.be.true;",
               "});",
               ""
             ],
@@ -396,6 +411,9 @@
           "listen": "test",
           "script": {
             "exec": [
+              "var Ajv = require(\"ajv\");",
+              "var ajv = new Ajv();",
+              "",
               "pm.test(\"Status code is 200\", function () {",
               "    pm.response.to.have.status(200);",
               "});",
@@ -422,7 +440,7 @@
               "var body = pm.response.json();",
               "",
               "pm.test('Response schema is valid', function() {",
-              "  pm.expect(tv4.validate(body, schema)).to.be.true;",
+              "  pm.expect(ajv.validate(body, schema)).to.be.true;",
               "});",
               ""
             ],

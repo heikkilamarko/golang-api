@@ -1,6 +1,6 @@
 CREATE OR REPLACE PROCEDURE price_range_proc(
-    INOUT min_price numeric,
-    INOUT max_price numeric)
+    INOUT min_price NUMERIC,
+    INOUT max_price NUMERIC)
 LANGUAGE 'plpgsql'
 AS $BODY$
 BEGIN
@@ -10,5 +10,5 @@ BEGIN
 END;
 $BODY$;
 
-COMMENT ON PROCEDURE price_range_proc(numeric, numeric)
+COMMENT ON PROCEDURE price_range_proc(NUMERIC, NUMERIC)
     IS 'Gets product price range as min and max values.';

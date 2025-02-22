@@ -1,3 +1,1 @@
-ALTER TABLE products
-    ADD updated_at timestamptz;
-
+ALTER TABLE products ADD updated_at TIMESTAMPTZ;

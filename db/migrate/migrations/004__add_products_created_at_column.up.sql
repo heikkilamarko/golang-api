@@ -1,3 +1,1 @@
-ALTER TABLE products
-    ADD created_at timestamptz NOT NULL;
-
+ALTER TABLE products ADD created_at TIMESTAMPTZ NOT NULL;

@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION price_range_func(
-    OUT min_price numeric,
-    OUT max_price numeric)
+    OUT min_price NUMERIC,
+    OUT max_price NUMERIC)
     RETURNS record
     LANGUAGE 'plpgsql'
 AS $BODY$
