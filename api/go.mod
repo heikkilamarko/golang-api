@@ -1,13 +1,13 @@
 module product-api
 
-go 1.24.0
+go 1.24.4
 
 require (
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/go-chi/cors v1.2.1
-	github.com/heikkilamarko/goutils v1.0.29
+	github.com/heikkilamarko/goutils v1.0.30
 	github.com/jackc/pgx/v4 v4.18.3
-	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa
+	golang.org/x/exp v0.0.0-20250606033433-dcc06ee1d476
 )
 
 require (
@@ -18,6 +18,6 @@ require (
 	github.com/jackc/pgproto3/v2 v2.3.3 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgtype v1.14.4 // indirect
-	golang.org/x/crypto v0.34.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/crypto v0.39.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
 )

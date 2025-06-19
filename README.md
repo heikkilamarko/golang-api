@@ -29,9 +29,5 @@ Kong Manager: http://localhost:8002
 ## Run Postman Tests
 
 ```bash
-cd test
-```
-
-```bash
-./run_tests.sh
+test/run_tests.sh
 ```

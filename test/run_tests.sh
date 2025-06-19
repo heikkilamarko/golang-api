@@ -1,4 +1,7 @@
 #!/bin/bash
+set -euo pipefail
+
+cd "$(dirname "$0")"
 
 read -sp "apikey: " API_KEY
 
